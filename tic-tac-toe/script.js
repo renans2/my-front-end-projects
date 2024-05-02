@@ -1,3 +1,9 @@
+const unavailableScale = "scale(0.9)";
+const hoverScale       = "scale(1.2)";
+const normalScale      = "scale(1)";
+const hoverShadow      = "0 0 20px white";
+const normalShadow     = "none";
+
 const HORIZONTAL_TOP    = [1,2,3];
 const HORIZONTAL_MIDDLE = [4,5,6];
 const HORIZONTAL_BOTTOM = [7,8,9];
@@ -110,20 +116,13 @@ function gameOver() {
 }
 
 function makeButtonAvailable(button){
-    button.innerHTML = "";
-    button.style.backgroundColor = "black";
-    button.style.cursor = "pointer";
-    button.addEventListener("click", buttonClicked);
-    button.addEventListener("mouseenter", whenMouseEnters);
-    button.addEventListener("mouseleave", whenMouseLeaves);
+    setAvailableStyle(button);
+    addListeners(button)
 }
 
 function makeButtonUnavailable(button){
-    button.style.backgroundColor = "black";
-    button.style.cursor = "not-allowed";
-    button.removeEventListener("click", buttonClicked);
-    button.removeEventListener("mouseenter", whenMouseEnters);
-    button.removeEventListener("mouseleave", whenMouseLeaves);
+    setUnavailableStyle(button);
+    removeListeners(button);
 }
 
 function resetGame(){
@@ -141,10 +140,42 @@ function resetPlayersArrays(){
 
 function whenMouseEnters(event){
     event.target.style.backgroundColor = "rgb(79, 79, 79)";
+    event.target.style.transform = hoverScale;
+    event.target.style.zIndex = "1";
+    event.target.style.boxShadow = hoverShadow;
 }
 
 function whenMouseLeaves(event){
     event.target.style.backgroundColor = "black";
+    event.target.style.transform = normalScale;
+    event.target.style.zIndex = "0";
+    event.target.style.boxShadow = normalShadow;
+}
+
+function setAvailableStyle(button){
+    button.innerHTML = "";
+    button.style.backgroundColor = "black";
+    button.style.cursor = "pointer";
+    button.style.transform = normalScale;
+}
+
+function setUnavailableStyle(button){
+    button.style.backgroundColor = "black";
+    button.style.cursor = "not-allowed";
+    button.style.transform = unavailableScale;
+    button.style.boxShadow = normalShadow;
+}
+
+function addListeners(button){
+    button.addEventListener("click", buttonClicked);
+    button.addEventListener("mouseenter", whenMouseEnters);
+    button.addEventListener("mouseleave", whenMouseLeaves);
+}
+
+function removeListeners(button){
+    button.removeEventListener("click", buttonClicked);
+    button.removeEventListener("mouseenter", whenMouseEnters);
+    button.removeEventListener("mouseleave", whenMouseLeaves);
 }
 
 function displayPlayAgainButton(){
