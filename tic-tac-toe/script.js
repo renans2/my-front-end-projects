@@ -1,22 +1,21 @@
 const HORIZONTAL_TOP    = [1,2,3];
 const HORIZONTAL_MIDDLE = [4,5,6];
 const HORIZONTAL_BOTTOM = [7,8,9];
+const VERTICAL_LEFT     = [1,4,7];
+const VERTICAL_MIDDLE   = [2,5,8];
+const VERTICAL_RIGHT    = [3,6,9];
+const DIAGONAL_ONE      = [1,5,9];
+const DIAGONAL_TWO      = [7,5,3];
 
-const VERTICAL_LEFT   = [1,4,7];
-const VERTICAL_MIDDLE = [2,5,8];
-const VERTICAL_RIGHT  = [3,6,9];
-
-const DIAGONAL_ONE = [1,5,9];
-const DIAGONAL_TWO = [7,5,3];
-
-let winningPatterns = [HORIZONTAL_TOP, 
-                       HORIZONTAL_MIDDLE, 
-                       HORIZONTAL_BOTTOM,
-                       VERTICAL_LEFT, 
-                       VERTICAL_MIDDLE, 
-                       VERTICAL_RIGHT,
-                       DIAGONAL_ONE, 
-                       DIAGONAL_TWO];
+const winningPatternColor = "rgb(30, 255, 0)";
+const winningPatterns = [HORIZONTAL_TOP   , 
+                         HORIZONTAL_MIDDLE, 
+                         HORIZONTAL_BOTTOM,
+                         VERTICAL_LEFT    , 
+                         VERTICAL_MIDDLE  , 
+                         VERTICAL_RIGHT   ,
+                         DIAGONAL_ONE     , 
+                         DIAGONAL_TWO];
 
 // Player1 == "O"
 let player1Array = new Array(9);
@@ -102,7 +101,7 @@ function makeAllButtonsUnavailable(){
 
 function colorizePattern(pattern){
     for (const index of pattern)
-        buttons[index - 1].style.backgroundColor = "rgba(0, 255, 4, 0.394)";
+        buttons[index - 1].style.backgroundColor = winningPatternColor;
 }
 
 function gameOver() {
