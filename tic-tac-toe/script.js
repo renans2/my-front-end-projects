@@ -1,8 +1,9 @@
-const unavailableScale = "scale(0.9)";
-const hoverScale       = "scale(1.2)";
-const normalScale      = "scale(1)";
-const hoverShadow      = "0 0 20px white";
-const normalShadow     = "none";
+const winningPatternColor = "rgb(30, 255, 0)";
+const unavailableScale    = "scale(0.9)";
+const hoverScale          = "scale(1.2)";
+const normalScale         = "scale(1)";
+const hoverShadow         = "0 0 20px white";
+const normalShadow        = "none";
 
 const HORIZONTAL_TOP    = [1,2,3];
 const HORIZONTAL_MIDDLE = [4,5,6];
@@ -13,7 +14,6 @@ const VERTICAL_RIGHT    = [3,6,9];
 const DIAGONAL_ONE      = [1,5,9];
 const DIAGONAL_TWO      = [7,5,3];
 
-const winningPatternColor = "rgb(30, 255, 0)";
 const winningPatterns = [HORIZONTAL_TOP   , 
                          HORIZONTAL_MIDDLE, 
                          HORIZONTAL_BOTTOM,
@@ -35,7 +35,7 @@ const P2Symbol = "X";
 
 let countPlays = 0
 let currentPlayer = 0;
-const buttons = document.querySelectorAll(".button");
+const buttons         = document.querySelectorAll(".button");
 const playAgainButton = document.querySelector("#play-again-button");
 
 playAgainButton.addEventListener("click", resetGame);
@@ -45,18 +45,21 @@ function buttonClicked(event){
     let button = event.target;
     makeButtonUnavailable(button);
 
+    playRound(button);
+}
+
+function playRound(button){
     countPlays++;
 
     if(countPlays == 9)
         gameOver();
 
-
     if(isPlayerOne()){
         P1Plays(button);
-        checkIfWon();
+        checkIfWon(player1Array);
     }else{
         P2Plays(button);
-        checkIfWon();
+        checkIfWon(player2Array);
     }
 
     changePlayer();
@@ -76,23 +79,20 @@ function P2Plays(button){
     button.style.color = P2Color;
 }
 
-function checkIfWon(){
-    let arrayToCheck;
-
-    if(isPlayerOne())
-        arrayToCheck = [...player1Array];
-    else
-        arrayToCheck = [...player2Array];
-
+function checkIfWon(arrayToCheck){
     for (let pattern of winningPatterns){
-        if(arrayToCheck[pattern[0] - 1] && 
-           arrayToCheck[pattern[1] - 1] &&
-           arrayToCheck[pattern[2] - 1]){
-                gameOver();
-                colorizePattern(pattern);
-                return;
+        if(isWinningPattern(arrayToCheck, pattern)){
+            gameOver();
+            colorizeWinningPattern(pattern);
+            return;
         }
     }
+}
+
+function isWinningPattern(array, pattern){
+    return array[pattern[0] - 1] && 
+           array[pattern[1] - 1] &&
+           array[pattern[2] - 1];
 }
 
 function makeAllButtonsAvailable(){
@@ -105,7 +105,7 @@ function makeAllButtonsUnavailable(){
         makeButtonUnavailable(button);
 }
 
-function colorizePattern(pattern){
+function colorizeWinningPattern(pattern){
     for (const index of pattern)
         buttons[index - 1].style.backgroundColor = winningPatternColor;
 }
@@ -140,30 +140,30 @@ function resetPlayersArrays(){
 
 function whenMouseEnters(event){
     event.target.style.backgroundColor = "rgb(79, 79, 79)";
-    event.target.style.transform = hoverScale;
-    event.target.style.zIndex = "1";
-    event.target.style.boxShadow = hoverShadow;
+    event.target.style.transform       = hoverScale;
+    event.target.style.zIndex          = "1";
+    event.target.style.boxShadow       = hoverShadow;
 }
 
 function whenMouseLeaves(event){
     event.target.style.backgroundColor = "black";
-    event.target.style.transform = normalScale;
-    event.target.style.zIndex = "0";
-    event.target.style.boxShadow = normalShadow;
+    event.target.style.transform       = normalScale;
+    event.target.style.zIndex          = "0";
+    event.target.style.boxShadow       = normalShadow;
 }
 
 function setAvailableStyle(button){
-    button.innerHTML = "";
+    button.innerHTML             = "";
     button.style.backgroundColor = "black";
-    button.style.cursor = "pointer";
-    button.style.transform = normalScale;
+    button.style.cursor          = "pointer";
+    button.style.transform       = normalScale;
 }
 
 function setUnavailableStyle(button){
     button.style.backgroundColor = "black";
-    button.style.cursor = "not-allowed";
-    button.style.transform = unavailableScale;
-    button.style.boxShadow = normalShadow;
+    button.style.cursor          = "not-allowed";
+    button.style.transform       = unavailableScale;
+    button.style.boxShadow       = normalShadow;
 }
 
 function addListeners(button){

@@ -33,9 +33,9 @@ body{
     justify-content: center;
     align-items: center;
     color: rgb(255, 255, 255);
-    transition: background-color 0.5s, 
-                transform 0.5s,
-                box-shadow 0.5s;
+    transition: background-color 0.2s, 
+                transform 0.2s,
+                box-shadow 0.2s;
 }
 
 #play-again-button{
@@ -50,7 +50,7 @@ body{
     cursor: pointer;
     transition: background-color 0.5s, 
                 color 0.5s, 
-                transform 0.1s;
+                transform 0.2s;
 }
 
 #play-again-button:hover{
