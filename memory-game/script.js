@@ -1,13 +1,10 @@
-const buttons = document.querySelectorAll(".button");
+$(document).ready(function(){
+    const colors = ["yellow", "blue", "red", "green", "black", "grey"];
+    $(".button").mouseenter(function(){
+      $(this).css("background-color", colors[parseInt(this.id) - 1]);
+    });
 
-addListeners();
-
-function addListeners(){
-    for (const button of buttons)
-        button.addEventListener("click", buttonClicked);
-}
-
-function buttonClicked(event){
-    let button = event.target;
-    console.log("hi");
-}
+    $(".button").mouseout(function(){
+        $(this).css("background-color", "white");
+      });
+});
