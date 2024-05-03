@@ -38,6 +38,24 @@ body{
                 box-shadow 0.2s;
 }
 
+.button-normal{
+    background-color: black;
+    cursor: pointer;
+    transform: scale(1);
+}
+
+.button-hover{
+    transform: scale(1.15);
+    box-shadow: 0 0 20px white;
+}
+
+.button-unavailable{
+    cursor: not-allowed;
+    transform: scale(0.90);
+    box-shadow: none;
+    background-color: black;
+}
+
 #play-again-button{
     display: none;
     margin-top: 10px;

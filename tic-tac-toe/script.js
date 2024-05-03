@@ -38,13 +38,31 @@ let currentPlayer = 0;
 const buttons         = document.querySelectorAll(".button");
 const playAgainButton = document.querySelector("#play-again-button");
 
-playAgainButton.addEventListener("click", resetGame);
-makeAllButtonsAvailable();
+$("#play-again-button").on("click", resetGame);
 
-function buttonClicked(event){
-    let button = event.target;
+$(".button").on("mouseenter", function(){
+    if(!$(this).hasClass("button-unavailable")){
+        $(this).css("background-color", "rgb(79, 79, 79)");
+        $(this).removeClass("button-normal");
+        $(this).addClass("button-hover");
+    }
+});
+
+$(".button").on("mouseleave", function(){
+    if(!$(this).hasClass("button-unavailable")){
+        $(this).css("background-color", "black");
+        $(this).removeClass("button-hover");
+        $(this).addClass("button-normal");
+    }
+});
+
+$(".button").on("click", function(){
+    if(!$(this).hasClass("button-unavailable"))
+        buttonClicked(this);
+})
+
+function buttonClicked(button){
     makeButtonUnavailable(button);
-
     playRound(button);
 }
 
@@ -68,15 +86,15 @@ function playRound(button){
 function P1Plays(button){
     const buttonIndex = parseInt(button.id) - 1;
     player1Array[buttonIndex] = true;
-    button.innerHTML = P1Symbol;
-    button.style.color = P1Color;
+    $(button).text(P1Symbol);
+    $(button).css("color", P1Color);
 }
 
 function P2Plays(button){
     const buttonIndex = parseInt(button.id) - 1;
     player2Array[buttonIndex] = true;
-    button.innerHTML = P2Symbol;
-    button.style.color = P2Color;
+    $(button).text(P2Symbol);
+    $(button).css("color", P2Color);
 }
 
 function checkIfWon(arrayToCheck){
@@ -96,18 +114,21 @@ function isWinningPattern(array, pattern){
 }
 
 function makeAllButtonsAvailable(){
-    for (const button of buttons)
-        makeButtonAvailable(button);
+    $(".button").css("background-color", "black");
+    $(".button").text("");
+    $(".button").removeClass("button-unavailable");
+    $(".button").removeClass("button-hover");
+    $(".button").addClass("button-normal");
 }
 
 function makeAllButtonsUnavailable(){
-    for (const button of buttons)
+    for (const button of $(".button"))
         makeButtonUnavailable(button);
 }
 
 function colorizeWinningPattern(pattern){
     for (const index of pattern)
-        buttons[index - 1].style.backgroundColor = winningPatternColor;
+        $("#" + index).css("background-color", "rgb(30, 255, 0)");
 }
 
 function gameOver() {
@@ -115,14 +136,11 @@ function gameOver() {
     displayPlayAgainButton();
 }
 
-function makeButtonAvailable(button){
-    setAvailableStyle(button);
-    addListeners(button)
-}
-
 function makeButtonUnavailable(button){
-    setUnavailableStyle(button);
-    removeListeners(button);
+    $(button).css("background-color", "black");
+    $(button).removeClass("button-normal");
+    $(button).removeClass("button-hover");
+    $(button).addClass("button-unavailable");
 }
 
 function resetGame(){
@@ -136,46 +154,6 @@ function resetGame(){
 function resetPlayersArrays(){
     player1Array = new Array(9);
     player2Array = new Array(9);
-}
-
-function whenMouseEnters(event){
-    event.target.style.backgroundColor = "rgb(79, 79, 79)";
-    event.target.style.transform       = hoverScale;
-    event.target.style.zIndex          = "1";
-    event.target.style.boxShadow       = hoverShadow;
-}
-
-function whenMouseLeaves(event){
-    event.target.style.backgroundColor = "black";
-    event.target.style.transform       = normalScale;
-    event.target.style.zIndex          = "0";
-    event.target.style.boxShadow       = normalShadow;
-}
-
-function setAvailableStyle(button){
-    button.innerHTML             = "";
-    button.style.backgroundColor = "black";
-    button.style.cursor          = "pointer";
-    button.style.transform       = normalScale;
-}
-
-function setUnavailableStyle(button){
-    button.style.backgroundColor = "black";
-    button.style.cursor          = "not-allowed";
-    button.style.transform       = unavailableScale;
-    button.style.boxShadow       = normalShadow;
-}
-
-function addListeners(button){
-    button.addEventListener("click", buttonClicked);
-    button.addEventListener("mouseenter", whenMouseEnters);
-    button.addEventListener("mouseleave", whenMouseLeaves);
-}
-
-function removeListeners(button){
-    button.removeEventListener("click", buttonClicked);
-    button.removeEventListener("mouseenter", whenMouseEnters);
-    button.removeEventListener("mouseleave", whenMouseLeaves);
 }
 
 function displayPlayAgainButton(){
