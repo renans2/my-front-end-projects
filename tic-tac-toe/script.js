@@ -1,9 +1,7 @@
-const winningPatternColor = "rgb(30, 255, 0)";
-const unavailableScale    = "scale(0.9)";
-const hoverScale          = "scale(1.2)";
-const normalScale         = "scale(1)";
-const hoverShadow         = "0 0 20px white";
-const normalShadow        = "none";
+/**
+ * Developed by Renan Silva
+ * GitHub: renans2
+ */
 
 const HORIZONTAL_TOP    = [1,2,3];
 const HORIZONTAL_MIDDLE = [4,5,6];
@@ -14,13 +12,13 @@ const VERTICAL_RIGHT    = [3,6,9];
 const DIAGONAL_ONE      = [1,5,9];
 const DIAGONAL_TWO      = [7,5,3];
 
-const winningPatterns = [HORIZONTAL_TOP   , 
+const winningPatterns = [HORIZONTAL_TOP, 
                          HORIZONTAL_MIDDLE, 
                          HORIZONTAL_BOTTOM,
-                         VERTICAL_LEFT    , 
-                         VERTICAL_MIDDLE  , 
-                         VERTICAL_RIGHT   ,
-                         DIAGONAL_ONE     , 
+                         VERTICAL_LEFT, 
+                         VERTICAL_MIDDLE, 
+                         VERTICAL_RIGHT,
+                         DIAGONAL_ONE, 
                          DIAGONAL_TWO];
 
 // Player1 == "O"
@@ -35,8 +33,6 @@ const P2Symbol = "X";
 
 let countPlays = 0
 let currentPlayer = 0;
-const buttons         = document.querySelectorAll(".button");
-const playAgainButton = document.querySelector("#play-again-button");
 
 $("#play-again-button").on("click", resetGame);
 
@@ -157,11 +153,11 @@ function resetPlayersArrays(){
 }
 
 function displayPlayAgainButton(){
-    playAgainButton.style.display = "flex"
+    $("#play-again-button").css("display", "flex");
 }
 
 function hidePlayAgainButton(){
-    playAgainButton.style.display = "none"
+    $("#play-again-button").css("display", "none");
 }
 
 function changePlayer(){
