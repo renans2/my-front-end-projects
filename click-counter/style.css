@@ -1,0 +1,81 @@
+/**
+ * Developed by Renan Silva
+ * GitHub: renans2
+ */
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 50px;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.clicks{
+    padding: 15px;
+    background-color: aqua;
+    border: 2px solid black;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px black;
+}
+
+.container{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+    width: 500px;
+}
+
+.top{
+    background-color: rgb(255, 0, 0);
+    position: absolute;
+    top: 100px;
+    width: 300px;
+    height: 150px;
+    border-radius: 100%;
+    cursor: pointer;
+    transition: top 0.15s;
+}
+
+.top:active{
+    top: 125px;
+}
+
+.middle{
+    background-color: rgb(104, 0, 0);
+    position: absolute;
+    bottom: 275px;
+    width: 300px;
+    height: 50px;
+    transition: height 0.15s;
+}
+
+.middle-down{
+    height: 25px;
+}
+
+.bottom{
+    background-color: rgb(104, 0, 0);
+    position: absolute;
+    top: 150px;
+    width: 300px;
+    height: 150px;
+    border-radius: 100%;
+}
+
+.base{
+    background-color: black;
+    position: absolute;
+    width: 400px;
+    height: 200px;
+    border-radius: 100%;
+    box-shadow: 0 10px 20px black;
+}
