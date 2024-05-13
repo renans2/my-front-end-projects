@@ -1,0 +1,33 @@
+.container{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(59, 59, 59);
+    width: 400px;
+    height: 200px;
+}
+
+.round-sides{
+    border-radius: 100%;
+    width: 150px;
+}
+
+#middle-rectangle{
+    position: absolute;
+    width: 150px;
+}
+
+.toggle-background{
+    background-color: rgb(255, 0, 0);
+    height: 150px;
+}
+
+#toggle-circle{
+    position: absolute;
+    left: 17%;
+    width: 125px;
+    height: 125px;
+    border-radius: 100%;
+    background-color: white;
+}
