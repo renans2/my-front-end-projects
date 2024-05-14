@@ -3,7 +3,7 @@
  * GitHub: renans2
  */
 
-let clickCounter;
+let clickCounter = 0;
 let clickSound;
 const audioVolume = 0.1;
 
