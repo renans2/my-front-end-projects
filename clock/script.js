@@ -33,8 +33,10 @@ function getFormattedTime(){
 
 $("#clock").on("click", function(){
     $(".stopwatch-buttons-container").css("display", "none");
+    $("#display").css("height", "90%");
 });
 
 $("#stopwatch").on("click", function(){
     $(".stopwatch-buttons-container").css("display", "flex");
+    $("#display").css("height", "40%");
 });
