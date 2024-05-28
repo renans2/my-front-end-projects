@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <script src="../libraries/jquery-3.7.1.min.js"></script>
     <title>Calculator</title>
 </head>
 <body>
     <div class="calculator-container">
         <div class="display-container">
-
+            <p id="display"></p>
         </div>
 
         <div class="buttons-container">
@@ -32,10 +35,10 @@
             <div id="+" class="button operator"><p>+</p></div>
             <div id="0" class="button number"><p>0</p></div>
             <div id="." class="button number"><p>.</p></div>
-            <div id="=" class="button operator"><p>=</p></div>
+            <div id="res" class="button"><p>=</p></div>
         </div>
     </div>
 
-    <script src="../libraries/jquery-3.7.1.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

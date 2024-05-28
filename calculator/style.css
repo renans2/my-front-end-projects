@@ -1,42 +1,53 @@
 *{
     margin: 0;
     padding: 0;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
 }
 
 .calculator-container{
     background-color: black;
-    border-radius: 20px;
+    border-radius: 60px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 360px;
-    height: 600px;
+    height: 650px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
 }
 
 .display-container{
     background-color: black;
-    border: 1px solid white;
-    border-radius: 20px;
-    width: 90%;
-    height: 20%;
+    /* border: 1px solid white; */
+    color: white;
+    font-size: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    width: 80%;
+    height: 25%;
+    margin-top: 40px;
+}
+
+#display-operations, #display-result{
+    /* border: 2px solid white; */
 }
 
 .buttons-container{
     background-color: black;
-    border: 1px solid white;
-    border-radius: 20px;
-    width: 90%;
-    height: 70%;
+    /* border: 1px solid white; */
+    width: 80%;
+    height: 60%;
     display: grid;
     grid-template-columns: auto auto auto auto;
-    justify-content: space-evenly;
-    align-content: space-evenly;
+    justify-content: space-between;
+    align-content: space-between;
+    margin-bottom: 35px;
 }
 
 .button{
@@ -47,15 +58,25 @@
     width: 60px;
     height: 60px;
     font-size: 35px;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.button:hover{
+    transform: scale(1.15);
+}
+
+.button:active{
+    transform: scale(1);
 }
 
 .number{
-    background-color: rgb(65, 65, 65);
+    background-color: rgb(33, 126, 128);
     color: white;
 }
 
-.operator{
-    background-color: rgb(255, 145, 0);
+.operator, #res{
+    background-color: rgb(0, 200, 210);
     color: white;
 }
 
