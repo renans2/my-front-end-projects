@@ -1,39 +1,63 @@
-const colors = ["yellow", "blue", "red", "green", "black", "grey"];
-let sequence = [];
-let gameIsOver = false;
-let isShowingSequence = false;
-let buttonsClicked = 0;
-let roundsPlayed = 0;
-let setIntId;
-let idx = 0;
-let timeByButtonToShow = 500;
-const buttons = $(".button");
+const colors = ["red", 
+                "orange", 
+                "yellow", 
+                "green", 
+                "blue", 
+                "violet"];
 const audios = [new Audio("audios/0.mp3"),
                 new Audio("audios/1.mp3"),
                 new Audio("audios/2.mp3"),
                 new Audio("audios/3.mp3"),
                 new Audio("audios/4.mp3"),
                 new Audio("audios/5.mp3")];
+let sequence = [];
+let sequenceIndex = 0;
+let gameStarted = false;
+let gameIsOver = false;
+let isShowingSequence = false;
+let buttonsClicked = 0;
+let roundsPlayed = 0;
+let sleepThenShowId;
+let setIntervalId;
+const delay = 500;
+const buttons = $(".button");
 
+$("#display-round").hide();
+$("#display-gameover").hide();
+$("#play-again").hide();
 
 setListeners();
 addNextToSequence();
 
 function setListeners(){
-    $("#start-button").on("click", showSequence);
+    $("#start-button").on("click", function(){
+        gameStarted = true;
+        $(this).hide();
+        $("#display-round").show();
+        updateRoundText();
+        showSequence();
+    });
+
+    $("#play-again").on("click", function(){
+        resetAll();
+        $(this).hide();
+        $("#display-gameover").hide();
+        $("#start-button").show()
+    });
 
     buttons.on("mouseenter", function(){
         if(canClickOrHover()){
-            $(this).css("background-color", colors[parseInt(this.id)]);
+            whenIsHovered(this);
+        }else{
+            $(this).css("cursor", "not-allowed");
         }
-        // else{
-        //     $(this).css("cursor", "not-allowed");
-        // }
     });
 
     buttons.on("mousemove", function(){
         if(canClickOrHover()){
-            $(this).css("background-color", colors[parseInt(this.id)]);
+            whenIsHovered(this);
+        }else{
+            $(this).css("cursor", "not-allowed");
         }
     });
 
@@ -48,10 +72,27 @@ function setListeners(){
             buttonClicked(parseInt(this.id));
         }
     });
+
+    buttons.on("mousedown", function(){
+        if(canClickOrHover())
+            $(this).addClass("button-active");
+    });
+
+    buttons.on("mouseup", function(){
+        $(this).removeClass("button-active");
+    });
+}
+
+function updateRoundText(){
+    $("#display-round").text("Round " + roundsPlayed);   
+}
+
+function whenIsHovered(button){
+    $(button).css("background-color", colors[parseInt(button.id)]);
+    $(button).css("cursor", "pointer");
 }
 
 function buttonClicked(buttonId){
-    console.log(buttonId);
     if(buttonId != sequence[buttonsClicked]){
         gameOver();
     }else{
@@ -64,46 +105,68 @@ function buttonClicked(buttonId){
 }
 
 function canClickOrHover(){
-    return !gameIsOver && !isShowingSequence;
+    return gameStarted && !gameIsOver && !isShowingSequence;
 }
 
 function gameOver(){
     gameIsOver = true;
-    console.log("game over!!!");
+    $("#display-round").hide();
+    $("#display-gameover").show();
+    $("#display-gameover").text("Game Over! You played for " + roundsPlayed + " rounds");
+    $("#play-again").show();
 }
 
 function newRound(){
     roundsPlayed++;
+    updateRoundText();
     buttonsClicked = 0;
     addNextToSequence();
     showSequence();
 }
 
 function showSequence(){
+    buttons.addClass("button-locked");
     makeAllWhite();
     isShowingSequence = true;
-    console.log(sequence);
-    idx = 0;
-    setIntId = setInterval(showSequenceAux, timeByButtonToShow);
+    sequenceIndex = 0;
+    sleepThenShowId = setInterval(sleepThenShowSequence, 750);
+}
+
+function sleepThenShowSequence() {
+    clearInterval(sleepThenShowId);
+    setIntervalId = setInterval(showSequenceAux, delay);
 }
 
 function showSequenceAux() {
-    if(idx > 0)
-        makePreviousButtonWhite(idx)
+    if(sequenceIndex > 0)
+        makePreviousButtonWhite(sequenceIndex)
 
-    if(idx == sequence.length){
-        clearInterval(setIntId);
+    if(sequenceIndex == sequence.length){
+        clearInterval(setIntervalId);
         isShowingSequence = false;
+        buttons.removeClass("button-locked");
     }else{
-        colorButton(idx);
-        playSound(idx);
-        idx++;
+        colorizeButton(sequenceIndex);
+        playSound(sequenceIndex);
+        sequenceIndex++;
     }
 }
 
 function playSound(idx) {
     audios[sequence[idx]].currentTime = 0;
     audios[sequence[idx]].play();
+}
+
+function resetAll(){
+    makeAllWhite();
+    sequence = [];
+    sequenceIndex = 0;
+    gameStarted = false;
+    gameIsOver = false;
+    isShowingSequence = false;
+    buttonsClicked = 0;
+    roundsPlayed = 0;
+    addNextToSequence();
 }
 
 function makeAllWhite(){
@@ -114,7 +177,7 @@ function makePreviousButtonWhite(idx){
     getButtonIdAtSequence(idx - 1).css("background-color", "white");
 }
 
-function colorButton(idx){
+function colorizeButton(idx){
     getButtonIdAtSequence(idx).css("background-color", getColor(idx));
 }
 
