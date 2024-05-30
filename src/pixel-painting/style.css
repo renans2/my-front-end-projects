@@ -1,0 +1,102 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html, body{
+    min-height: 100vh;
+    min-width: 100vw;
+    overflow: auto;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    overflow-x: auto;
+}
+
+.container{
+    border: 2px solid black;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 10px;
+}
+
+.tools-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-right: 10px;
+}
+
+#clear{
+    width: 100px;
+    height: 30px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.color-container{
+    background-color: rgb(255, 255, 255);
+    display: grid;
+    grid-template-columns: auto auto;
+    row-gap: 3px;
+    column-gap: 3px;
+    padding: 5px;
+    border: 2px solid black;
+}
+
+.color{
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    transition: border-radius 0.25s;
+}
+
+.color-hover{
+    border-radius: 100%;
+}
+
+.pixels-container{
+    border: 2px solid black;
+    display: grid;
+    grid-template-columns: repeat(50, auto);
+    width: fit-content;
+    height: fit-content;
+}
+
+.cell{
+    width: 15px;
+    height: 15px;
+    /* border: 0.1px solid black; */
+}
+
+/* Yeah, it is hardcoded, so what?? It was fun!! */
+#c1 { background-color: rgb(255, 0, 0);     }
+#c2 { background-color: rgb(139, 0, 0);     }
+#c3 { background-color: rgb(255, 123, 0);   }
+#c4 { background-color: rgb(145, 70, 0);    }
+#c5 { background-color: rgb(255, 230, 0);   }
+#c6 { background-color: rgb(142, 127, 0);   }
+#c7 { background-color: rgb(174, 255, 0);   }
+#c8 { background-color: rgb(92, 134, 0);    }
+#c9 { background-color: rgb(0, 255, 0);     }
+#c10{ background-color: rgb(0, 125, 0);     }
+#c11{ background-color: rgb(0, 255, 229);   }
+#c12{ background-color: rgb(0, 142, 128);   }
+#c13{ background-color: rgb(0, 128, 255);   }
+#c14{ background-color: rgb(0, 65, 131);    }
+#c15{ background-color: rgb(0, 21, 255);    }
+#c16{ background-color: rgb(0, 12, 142);    }
+#c17{ background-color: rgb(128, 0, 255);   }
+#c18{ background-color: rgb(69, 0, 137);    }
+#c19{ background-color: rgb(255, 0, 234);   }
+#c20{ background-color: rgb(134, 0, 123);   }
+#c21{ background-color: rgb(0, 0, 0);       }
+#c22{ background-color: rgb(255, 255, 255); }
