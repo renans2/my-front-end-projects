@@ -35,10 +35,6 @@ body{
                 box-shadow 0.2s;
 }
 
-.button:hover{
-    background-color: aqua;
-}
-
 .button:active{
     transform: translate(0, 5%);
     box-shadow: none;
