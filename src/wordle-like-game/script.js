@@ -1,75 +1,14 @@
-const word = "world";
+const wordStr = "world";
+const word = [...wordStr];
 const lettersByRow = 5;
 const rows = 6;
 let grid = [];
+let gameIsOver = false;
 
 let currentRow = 0;
 let currentCol = 0;
 
 fill();
-
-$(".key").on("click", function(){
-    grid[currentRow][currentCol++].text($(this).text());
-
-    if(currentCol == lettersByRow)
-        updateAndCheckIfWon();
-});
-
-$("#backspace").on("click", function(){
-    if(currentCol > 0)
-        grid[currentRow][--currentCol].text("");
-});
-
-function updateAndCheckIfWon(){
-    let won = true;
-
-    for (let col = 0; col < lettersByRow; col++) {
-        const letter = getLetterInGrid(currentRow, col);
-
-        if(letter == word.charAt(col)){
-            makeBackgroundGreen(currentRow, col);
-        } else if(word.includes(letter)){
-            makeBackgroundYellow(currentRow, col);
-            won = false;
-        } else {
-            makeBackgroundRed(currentRow, col);
-            won = false;
-        }
-    }
-
-    if(won){
-        console.log("you won!!!");
-    } else {
-        currentCol = 0;
-        currentRow++;
-        if(currentRow == rows){
-            console.log("you lost!!!");
-        }
-    }
-}
-
-function getLetterInGrid(row, col){
-    return grid[row][col].text().toLowerCase();
-}
-
-function makeBackgroundGreen(row, col) {
-    grid[row][col].css("background-color", "green");
-    makeTextWhite(row, col);
-}
-
-function makeBackgroundYellow(row, col) {
-    grid[row][col].css("background-color", "orange");
-    makeTextWhite(row, col);
-}
-
-function makeBackgroundRed(row, col) {
-    grid[row][col].css("background-color", "red");
-    makeTextWhite(row, col);
-}
-
-function makeTextWhite(row, col){
-    grid[row][col].css("color", "white");
-}
 
 function fill(){
     for (let i = 0; i < rows; i++){
@@ -83,4 +22,117 @@ function fill(){
             grid[i][j] = letterDiv;
         }
     }
+}
+
+$(".key").on("click", function(){
+    if(!gameIsOver){
+        grid[currentRow][currentCol++].text($(this).text());
+    
+        if(currentCol == lettersByRow)
+            updateAndCheckIfWon();
+    }
+});
+
+$("#backspace").on("click", function(){
+    if(!gameIsOver && currentCol > 0)
+        grid[currentRow][--currentCol].text("");
+});
+
+function updateAndCheckIfWon(){
+    paintAllReds();
+    paintAllGreens();
+    paintTheRest();
+
+    let won = allGreens();
+
+    if(won){
+        gameIsOver = true;
+        console.log("you won!!!");
+    }else{
+        currentCol = 0;
+        currentRow++;
+        if(currentRow == rows){
+            gameIsOver = true;
+            console.log("you lost!!!");
+        }
+    }
+}
+
+function paintAllReds(){
+    for (let col = 0; col < lettersByRow; col++) {
+        const letter = getLetter(col);
+
+        if(!word.includes(letter))
+            makeBackgroundRed(col);
+    }
+}
+
+function paintAllGreens(){
+    for (let col = 0; col < lettersByRow; col++) {
+        const letter = getLetter(col);
+        
+        if(letter === word[col])
+            makeBackgroundGreen(col);
+    }
+}
+
+function paintTheRest(){
+    for (let col = 0; col < lettersByRow; col++){
+        const letterDiv = grid[currentRow][col];
+        if(colorNotDefined(letterDiv)){
+            const letter = getLetter(col);
+            const leftToPaint = leftToPaintYellow(letter);
+            const countBefore = howManyBefore(letter, col);
+
+            if(countBefore >= leftToPaint)
+                makeBackgroundRed(col);
+            else 
+                makeBackgroundYellow(col);
+        }
+    }
+}
+
+function leftToPaintYellow(letter){
+    const inCorrectWord = word.filter(l => l === letter).length;
+    const inCorrectPos  = grid[currentRow].filter(letterDiv => letterDiv.hasClass("green") && 
+                                                               sameLetter(letterDiv, letter)).length;
+    return inCorrectWord - inCorrectPos;
+}
+
+function howManyBefore(letter, col){
+    let count = 0;
+    for (let i = 0; i < col; i++)
+        if(getLetter(i) === letter)
+            count++;
+
+    return count;
+}
+
+function getLetter(col){
+    return grid[currentRow][col].text().toLowerCase();
+}
+
+function makeBackgroundGreen(col) {
+    grid[currentRow][col].addClass("green");
+}
+
+function makeBackgroundYellow(col) {
+    grid[currentRow][col].addClass("yellow");
+}
+
+function makeBackgroundRed(col) {
+    grid[currentRow][col].addClass("red");
+}
+
+function allGreens() {
+    return grid[currentRow].filter(letterDiv => letterDiv.hasClass("green"))
+                           .length == lettersByRow;
+}
+
+function colorNotDefined(div) {
+    return !div.hasClass("green") && !div.hasClass("yellow") && !div.hasClass("red")
+}
+
+function sameLetter(letterDiv, letter){
+    return letterDiv.text().toLowerCase() == letter;
 }

@@ -1,9 +1,12 @@
 *{
     margin: 0;
     padding: 0;
+    color: white;
+    user-select: none;
 }
 
 body{
+    background-color: black;
     min-width: 100vw;
     min-height: 100vh;
     overflow: auto;
@@ -38,14 +41,13 @@ body{
 }
 
 .key, .letter, #backspace{
-    background-color: white;
+    background-color: black;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid black;
+    border: 2px solid white;
     border-radius: 10px;
-    font-family: "Jura", sans-serif;
-    font-optical-sizing: auto;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-style: normal;
     cursor: pointer;
@@ -53,10 +55,12 @@ body{
 }
 
 .letter{
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     font-size: 50px;
     margin: 3px;
+    transition: background-color 2.5s,
+                transform 1.5s;
 }
 
 .key, #backspace{
@@ -68,9 +72,10 @@ body{
 
 #backspace-icon{
     width: 40px;
+    filter: invert(100%);
 }
 
-.key:hover{
+.key:hover, #backspace:hover{
     transform: scale(1.2);
 }
 
@@ -79,3 +84,7 @@ body{
     color: white;
     background-color: brown;
 }
+
+.green { background-color: green;  transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
+.yellow{ background-color: orange; transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
+.red   { background-color: brown;  transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
