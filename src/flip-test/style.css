@@ -1,0 +1,13 @@
+.container{
+    background-color: aqua;
+    width: 500px;
+    height: 500px;
+    border: 2px solid black;
+    transition: transform 0.5s,
+                background-color 0.5s;
+}
+
+.container:hover{
+    transform: rotateX(180deg);
+    background-color: blue;
+}

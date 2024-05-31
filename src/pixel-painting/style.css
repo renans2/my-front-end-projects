@@ -3,18 +3,14 @@
     padding: 0;
 }
 
-html, body{
-    min-height: 100vh;
-    min-width: 100vw;
-    overflow: auto;
-}
-
 body{
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: auto;
     display: flex;
     justify-content: center;
     align-items: center;
     user-select: none;
-    overflow-x: auto;
 }
 
 .container{
