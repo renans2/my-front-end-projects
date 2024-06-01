@@ -1,12 +1,21 @@
+:root{
+    --background: black;
+    --green: green;
+    --yellow: orange;
+    --red: brown;
+}
+
 *{
     margin: 0;
     padding: 0;
     color: white;
+    font-family: "Poppins", sans-serif;
+    font-style: normal;
     user-select: none;
 }
 
 body{
-    background-color: black;
+    background-color: var(--background);
     min-width: 100vw;
     min-height: 100vh;
     overflow: auto;
@@ -19,19 +28,13 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* border: 2px solid black; */
 }
 
 .words-container{
     margin-bottom: 30px;
 }
 
-.row{
-    display: flex;
-    justify-content: center;
-}
-
-.keyboard-row{
+.row, .keyboard-row{
     display: flex;
     justify-content: center;
 }
@@ -40,36 +43,57 @@ body{
     cursor: not-allowed;
 }
 
-.key, .letter, #backspace{
-    background-color: black;
+.key, .letter, .backspace, .enter{
+    background-color: var(--background);
     display: flex;
     justify-content: center;
     align-items: center;
     border: 2px solid white;
     border-radius: 10px;
-    font-family: "Poppins", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    cursor: pointer;
+    margin: 3px;
 }
 
 .letter{
     width: 70px;
     height: 70px;
     font-size: 50px;
-    margin: 3px;
+    font-weight: 700;
+    transition: background-color 2s,
+                transform 1.5s;
 }
 
-.key, #backspace{
+.key, .backspace, .enter{
     width: 60px;
     height: 60px;
-    font-size: 40px;
-    margin: 3px;
+    font-size: 35px;
+    font-weight: 600;
 }
 
-.key, .letter{
-    transition: background-color 2.5s,
-                transform 1.5s;
+.enter{
+    width: 130px;
+}
+
+.key, .backspace{
+    cursor: pointer;
+    transition: background-color 2s, 
+                transform 0.15s;
+}
+
+.enter-locked{
+    cursor: not-allowed;
+}
+
+.enter-available{
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.key:hover, .backspace:hover, .enter-available:hover{
+    transform: scale(1.2);
+}
+
+.key:active, .backspace:active, .enter-available:active{
+    transform: scale(0.9);
 }
 
 #backspace-icon{
@@ -77,16 +101,10 @@ body{
     filter: invert(100%);
 }
 
-.key:hover, #backspace:hover{
-    transform: scale(1.2);
-}
+.letter-green { background-color: var(--green);  transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
+.letter-yellow{ background-color: var(--yellow); transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
+.letter-red   { background-color: var(--red);    transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
 
-/* .key-locked{
-    transform: scale(0.8);
-    color: white;
-    background-color: brown;
-} */
-
-.green { background-color: green;  transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
-.yellow{ background-color: orange; transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
-.red   { background-color: brown;  transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
+.key-green { background-color: var(--green);  }
+.key-yellow{ background-color: var(--yellow); }
+.key-red   { background-color: var(--red); transform: scale(0.9) }

@@ -25,17 +25,29 @@ function fill(){
 }
 
 $(".key").on("click", function(){
-    if(!gameIsOver){
-        grid[currentRow][currentCol++].text($(this).text());
+    if(!gameIsOver && currentCol < lettersByRow){
+        const letterDiv = grid[currentRow][currentCol++];
+        letterDiv.text($(this).text());
     
         if(currentCol == lettersByRow)
-            updateAndCheckIfWon();
+            $(".enter").toggleClass("enter-locked enter-available");
     }
 });
 
-$("#backspace").on("click", function(){
-    if(!gameIsOver && currentCol > 0)
+$(".enter").on("click", function(){
+    if($(this).hasClass("enter-available")){
+        updateAndCheckIfWon();
+        $(this).toggleClass("enter-locked enter-available");
+    }
+});
+
+$(".backspace").on("click", function(){
+    if(!gameIsOver && currentCol > 0){
         grid[currentRow][--currentCol].text("");
+        
+        if($(".enter").hasClass("enter-available"))
+            $(".enter").toggleClass("enter-locked enter-available");
+    }
 });
 
 function updateAndCheckIfWon(){
@@ -79,7 +91,7 @@ function paintAllGreens(){
 function paintTheRest(){
     for (let col = 0; col < lettersByRow; col++){
         const letterDiv = grid[currentRow][col];
-        if(colorNotDefined(letterDiv)){
+        if(colorNotDefinedLetter(letterDiv)){
             const letter = getLetter(col);
             const leftToPaint = leftToPaintYellow(letter);
             const countBefore = howManyBefore(letter, col);
@@ -94,7 +106,7 @@ function paintTheRest(){
 
 function leftToPaintYellow(letter){
     const inCorrectWord = word.filter(l => l === letter).length;
-    const inCorrectPos  = grid[currentRow].filter(letterDiv => letterDiv.hasClass("green") && 
+    const inCorrectPos  = grid[currentRow].filter(letterDiv => letterDiv.hasClass("letter-green") && 
                                                                sameLetter(letterDiv, letter)).length;
     return inCorrectWord - inCorrectPos;
 }
@@ -113,15 +125,15 @@ function getLetter(col){
 }
 
 function makeBackgroundGreen(col, letter) {
-    addClassToLetterDivAndKey(col, letter, "green");
+    addClassToLetterDivAndKey(col, letter, "letter-green");
 }
 
 function makeBackgroundYellow(col, letter) {
-    addClassToLetterDivAndKey(col, letter, "yellow");
+    addClassToLetterDivAndKey(col, letter, "letter-yellow");
 }
 
 function makeBackgroundRed(col, letter) {
-    addClassToLetterDivAndKey(col, letter, "red");
+    addClassToLetterDivAndKey(col, letter, "letter-red");
 }
 
 function addClassToLetterDivAndKey(col, letter, className){
@@ -129,24 +141,49 @@ function addClassToLetterDivAndKey(col, letter, className){
 
     const key = $(".key").filter((_, letterDiv) => $(letterDiv).text().toLowerCase() === letter);
     
-    if(className == "green"){
-        key.removeClass("yellow");
-        key.removeClass("red");
-        key.addClass("green");
-    }else if(colorNotDefined(key)){
-        key.addClass(className);
+    if(className == "letter-green"){
+        key.removeClass("key-yellow");
+        key.removeClass("key-red");
+        key.addClass("key-green");
+    }else if(colorNotDefinedKey(key)){
+        key.addClass(getClassForKey(className));
+    }
+}
+
+function getClassForKey(className){
+    switch (className) {
+        case "letter-green":
+            return "key-green";
+    
+        case "letter-yellow":
+            return "key-yellow";
+
+        case "letter-red":
+            return "key-red";            
+
+        default:
+            break;
     }
 }
 
 function allGreens() {
-    return grid[currentRow].filter(letterDiv => letterDiv.hasClass("green"))
+    return grid[currentRow].filter(letterDiv => letterDiv.hasClass("letter-green"))
                            .length == lettersByRow;
 }
 
-function colorNotDefined(div) {
-    return !div.hasClass("green") && !div.hasClass("yellow") && !div.hasClass("red")
+function colorNotDefinedLetter(letterDiv) {
+    return !letterDiv.hasClass("letter-green")  && 
+           !letterDiv.hasClass("letter-yellow") && 
+           !letterDiv.hasClass("letter-red")
+}
+
+function colorNotDefinedKey(keyDiv) {
+    return !keyDiv.hasClass("key-green")  && 
+           !keyDiv.hasClass("key-yellow") && 
+           !keyDiv.hasClass("key-red")
 }
 
 function sameLetter(letterDiv, letter){
-    return letterDiv.text().toLowerCase() == letter;
+    return letterDiv.text()
+                    .toLowerCase() == letter;
 }
