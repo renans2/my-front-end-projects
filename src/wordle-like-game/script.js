@@ -1,4 +1,4 @@
-const wordStr = "world";
+const wordStr = "caixa";
 const word = [...wordStr];
 const lettersByRow = 5;
 const rows = 6;
@@ -63,7 +63,7 @@ function paintAllReds(){
         const letter = getLetter(col);
 
         if(!word.includes(letter))
-            makeBackgroundRed(col);
+            makeBackgroundRed(col, letter);
     }
 }
 
@@ -72,7 +72,7 @@ function paintAllGreens(){
         const letter = getLetter(col);
         
         if(letter === word[col])
-            makeBackgroundGreen(col);
+            makeBackgroundGreen(col, letter);
     }
 }
 
@@ -85,9 +85,9 @@ function paintTheRest(){
             const countBefore = howManyBefore(letter, col);
 
             if(countBefore >= leftToPaint)
-                makeBackgroundRed(col);
+                makeBackgroundRed(col, letter);
             else 
-                makeBackgroundYellow(col);
+                makeBackgroundYellow(col, letter);
         }
     }
 }
@@ -112,16 +112,30 @@ function getLetter(col){
     return grid[currentRow][col].text().toLowerCase();
 }
 
-function makeBackgroundGreen(col) {
-    grid[currentRow][col].addClass("green");
+function makeBackgroundGreen(col, letter) {
+    addClassToLetterDivAndKey(col, letter, "green");
 }
 
-function makeBackgroundYellow(col) {
-    grid[currentRow][col].addClass("yellow");
+function makeBackgroundYellow(col, letter) {
+    addClassToLetterDivAndKey(col, letter, "yellow");
 }
 
-function makeBackgroundRed(col) {
-    grid[currentRow][col].addClass("red");
+function makeBackgroundRed(col, letter) {
+    addClassToLetterDivAndKey(col, letter, "red");
+}
+
+function addClassToLetterDivAndKey(col, letter, className){
+    grid[currentRow][col].addClass(className);
+
+    const key = $(".key").filter((_, letterDiv) => $(letterDiv).text().toLowerCase() === letter);
+    
+    if(className == "green"){
+        key.removeClass("yellow");
+        key.removeClass("red");
+        key.addClass("green");
+    }else if(colorNotDefined(key)){
+        key.addClass(className);
+    }
 }
 
 function allGreens() {

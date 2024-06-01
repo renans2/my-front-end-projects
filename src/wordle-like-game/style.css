@@ -51,7 +51,6 @@ body{
     font-weight: 700;
     font-style: normal;
     cursor: pointer;
-    transition: transform 0.1s;
 }
 
 .letter{
@@ -59,8 +58,6 @@ body{
     height: 70px;
     font-size: 50px;
     margin: 3px;
-    transition: background-color 2.5s,
-                transform 1.5s;
 }
 
 .key, #backspace{
@@ -68,6 +65,11 @@ body{
     height: 60px;
     font-size: 40px;
     margin: 3px;
+}
+
+.key, .letter{
+    transition: background-color 2.5s,
+                transform 1.5s;
 }
 
 #backspace-icon{
@@ -79,11 +81,11 @@ body{
     transform: scale(1.2);
 }
 
-.key-locked{
+/* .key-locked{
     transform: scale(0.8);
     color: white;
     background-color: brown;
-}
+} */
 
 .green { background-color: green;  transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
 .yellow{ background-color: orange; transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg); }
