@@ -1,7 +1,8 @@
 const dimensions = 25;
 const delay = 65;
 let score = 0;
-let gameIsOver = false;
+let gameIsWaiting = true;
+let gameIsOn = false;
 let grid = [];
 let headRow = 0;
 let headCol = 0;
@@ -9,46 +10,80 @@ let tailRow = headRow;
 let tailCol = headCol;
 let trail = [];
 let dir = "right";
-let tempDir = "right";
+let tempDir = dir;
+let setIntID;
+
 const gameContainer = $(".game-container");
 gameContainer.css("grid-template-columns", "repeat("+dimensions+", auto)");
+const gameOverMsg = $(".gameover-msg");
+const gameOverContainer = $(".gameover-container");
+gameOverContainer.hide();
+const startContainer = $(".start-container");
 
 fill();
-grid[headRow][headCol].toggleClass("body");
-newApple();
-setInterval(update, delay);
 
 $(document).on("keydown", function(e){
-    switch (e.key) {
-        case "ArrowUp":    tempDir = "up";    break;
-        case "ArrowRight": tempDir = "right"; break;
-        case "ArrowDown":  tempDir = "down";  break;
-        case "ArrowLeft":  tempDir = "left";  break;
-        case "w":          tempDir = "up";    break;
-        case "d":          tempDir = "right"; break;
-        case "s":          tempDir = "down";  break;
-        case "a":          tempDir = "left";  break;
-        default: break;
+    if(gameIsWaiting && e.key == " "){
+        orderToStart();
+    }else if(gameIsOn){
+        switch (e.key) {
+            case "ArrowUp":    tempDir = "up";    break;
+            case "ArrowRight": tempDir = "right"; break;
+            case "ArrowDown":  tempDir = "down";  break;
+            case "ArrowLeft":  tempDir = "left";  break;
+            case "w":          tempDir = "up";    break;
+            case "d":          tempDir = "right"; break;
+            case "s":          tempDir = "down";  break;
+            case "a":          tempDir = "left";  break;
+            default: break;
+        }
     }
 });
 
+startContainer.on("click", orderToStart);
+
+$("#playagain-button").on("click", function(){
+    resetGame();
+    gameOverContainer.hide();
+    startContainer.show();
+    gameIsWaiting = true;
+});
+
+function orderToStart(){
+    gameIsWaiting = false;
+    startContainer.hide();
+    startGame();
+}
+
+function startGame(){
+    gameIsOn = true;
+    grid[headRow][headCol].toggleClass("body");
+    newApple();
+    setIntID = setInterval(update, delay);
+}
+
 function update(){
-    if(!gameIsOver){
-        updateDir();
-        moveHead();
-        if(hitBorderOrBody())
-            gameOver();
-        else{
-            pushToTrail();
-            if(hasEatenApple()) {
-                score++;
+    updateDir();
+    moveHead();
+    if(hitBorderOrBody()){
+        gameEnded("lost");
+    }else{
+        pushToTrail();
+        if(hasEatenApple()) {
+            score++;
+            if(hasWon())
+                gameEnded("won");
+            else
                 newApple();
-            }else{
-                eraseTail();
-            }                
-            grid[headRow][headCol].addClass("body");
-        }
+        }else{
+            eraseTail();
+        }                
+        grid[headRow][headCol].addClass("body");
     }
+}
+
+function hasWon(){
+    return (score + 1) == dimensions * dimensions;
 }
 
 function updateDir() {
@@ -75,10 +110,25 @@ function hitBorderOrBody(){
            grid[headRow][headCol].hasClass("body");
 }
 
-function gameOver(){
-    gameIsOver = true;
-    console.log("gameOver");
+function gameEnded(result){
+    gameIsOn = false;
+    clearInterval(setIntID);
+    
+    if(result == "won")
+        won();
+    else 
+        lost();
+
+    gameOverContainer.show();
+}
+
+function lost(){
+    gameOverMsg.html("GAME OVER!!! <br> SCORE: <em class='score'>" + score + "</em>");
     $(".body").addClass("dead");
+}
+
+function won(){
+    gameOverMsg.html("<em class='won'>YOU WON!!!</em>");
 }
 
 function pushToTrail(){
@@ -109,6 +159,20 @@ function eraseTail(){
         case "left":  tailCol--; break;
         default: break;
     }
+}
+
+function resetGame(){
+    score = 0;
+    headRow = 0;
+    headCol = 0;
+    tailRow = headRow;
+    tailCol = headCol;
+    trail = [];
+    dir = "right";
+    tempDir = dir;
+    $(".cell").removeClass("body")
+              .removeClass("dead")
+              .removeClass("apple");
 }
 
 function fill() {
