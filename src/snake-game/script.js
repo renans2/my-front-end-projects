@@ -12,6 +12,9 @@ let trail = [];
 let dir = "right";
 let tempDir = dir;
 let setIntID;
+const startAudio = new Audio("audios/start.mp3");
+const eatAudio   = new Audio("audios/eat.mp3");
+const deadAudio  = new Audio("audios/dead.mp3");
 
 const gameContainer = $(".game-container");
 gameContainer.css("grid-template-columns", "repeat("+dimensions+", auto)");
@@ -57,6 +60,7 @@ function orderToStart(){
 
 function startGame(){
     gameIsOn = true;
+    playAudio(startAudio);
     grid[headRow][headCol].toggleClass("body");
     newApple();
     setIntID = setInterval(update, delay);
@@ -66,10 +70,12 @@ function update(){
     updateDir();
     moveHead();
     if(hitBorderOrBody()){
+        playAudio(deadAudio);
         gameEnded("lost");
     }else{
         pushToTrail();
         if(hasEatenApple()) {
+            playAudio(eatAudio);
             score++;
             if(hasWon())
                 gameEnded("won");
@@ -80,6 +86,11 @@ function update(){
         }                
         grid[headRow][headCol].addClass("body");
     }
+}
+
+function playAudio(audio){
+    audio.currentTime = 0;
+    audio.play();
 }
 
 function hasWon(){
