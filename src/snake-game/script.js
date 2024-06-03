@@ -1,43 +1,61 @@
 const dimensions = 25;
 const delay = 65;
-let score = 0;
+let score = 1;
+let maxScore = 0;
 let gameIsWaiting = true;
 let gameIsOn = false;
 let grid = [];
-let headRow = 0;
+let headRow = Math.floor(dimensions/2);
 let headCol = 0;
 let tailRow = headRow;
 let tailCol = headCol;
 let trail = [];
 let dir = "right";
-let tempDir = dir;
+let dirQueue = [dir];
 let setIntID;
 const startAudio = new Audio("audios/start.mp3");
 const eatAudio   = new Audio("audios/eat.mp3");
 const deadAudio  = new Audio("audios/dead.mp3");
 
 const gameContainer = $(".game-container");
-gameContainer.css("grid-template-columns", "repeat("+dimensions+", auto)");
 const gameOverMsg = $(".gameover-msg");
 const gameOverContainer = $(".gameover-container");
-gameOverContainer.hide();
 const startContainer = $(".start-container");
+const currentScoreDisplay = $(".current-score-display");
+const maxScoreDisplay = $(".max-score-display");
+gameContainer.css("grid-template-columns", "repeat("+dimensions+", auto)");
+gameOverContainer.hide();
 
+if(localStorage.getItem("maxScore") != null){
+    maxScore = parseInt(localStorage.getItem("maxScore"));
+}else{
+    localStorage.setItem("maxScore", 0);
+}
+
+updateScoreDisplay();
+updateMaxScoreDisplay()
 fill();
 
 $(document).on("keydown", function(e){
-    if(gameIsWaiting && e.key == " "){
-        orderToStart();
+    if(e.key == " "){
+        if(gameIsWaiting)
+            orderToStart();
+        else if(!gameIsOn && !gameIsWaiting) //when the game is over
+            orderToReset();
     }else if(gameIsOn){
         switch (e.key) {
-            case "ArrowUp":    tempDir = "up";    break;
-            case "ArrowRight": tempDir = "right"; break;
-            case "ArrowDown":  tempDir = "down";  break;
-            case "ArrowLeft":  tempDir = "left";  break;
-            case "w":          tempDir = "up";    break;
-            case "d":          tempDir = "right"; break;
-            case "s":          tempDir = "down";  break;
-            case "a":          tempDir = "left";  break;
+            case "ArrowUp":    dirQueue.push("up");    break;
+            case "ArrowRight": dirQueue.push("right"); break;
+            case "ArrowDown":  dirQueue.push("down");  break;
+            case "ArrowLeft":  dirQueue.push("left");  break;
+            case "w":          dirQueue.push("up");    break;
+            case "d":          dirQueue.push("right"); break;
+            case "s":          dirQueue.push("down");  break;
+            case "a":          dirQueue.push("left");  break;
+            case "W":          dirQueue.push("up");    break;
+            case "D":          dirQueue.push("right"); break;
+            case "S":          dirQueue.push("down");  break;
+            case "A":          dirQueue.push("left");  break;
             default: break;
         }
     }
@@ -46,11 +64,15 @@ $(document).on("keydown", function(e){
 startContainer.on("click", orderToStart);
 
 $("#playagain-button").on("click", function(){
+    orderToReset();
+});
+
+function orderToReset(){
     resetGame();
     gameOverContainer.hide();
     startContainer.show();
     gameIsWaiting = true;
-});
+}
 
 function orderToStart(){
     gameIsWaiting = false;
@@ -73,10 +95,12 @@ function update(){
         playAudio(deadAudio);
         gameEnded("lost");
     }else{
+        grid[headRow][headCol].addClass("body");
         pushToTrail();
         if(hasEatenApple()) {
             playAudio(eatAudio);
             score++;
+            updateScoreDisplay();
             if(hasWon())
                 gameEnded("won");
             else
@@ -84,8 +108,15 @@ function update(){
         }else{
             eraseTail();
         }                
-        grid[headRow][headCol].addClass("body");
     }
+}
+
+function updateScoreDisplay(){
+    currentScoreDisplay.html("SCORE: <em class='score'>" + score + "</em>");
+}
+
+function updateMaxScoreDisplay(){
+    maxScoreDisplay.html("MAX SCORE: <em class='max-score'>" + maxScore + "</em>");
 }
 
 function playAudio(audio){
@@ -94,15 +125,21 @@ function playAudio(audio){
 }
 
 function hasWon(){
-    return (score + 1) == dimensions * dimensions;
+    return score == dimensions * dimensions;
 }
 
 function updateDir() {
-    if((dir == "up"    && tempDir != "down") ||
-       (dir == "right" && tempDir != "left") ||
-       (dir == "down"  && tempDir != "up")   ||
-       (dir == "left"  && tempDir != "right"))
+    let tempDir;
+
+    if(dirQueue.length > 0){
+        tempDir = dirQueue.shift();
+
+        if((dir == "up"    && tempDir != "down") ||
+           (dir == "right" && tempDir != "left") ||
+           (dir == "down"  && tempDir != "up")   ||
+           (dir == "left"  && tempDir != "right"))
            dir = tempDir;
+    }
 }
 
 function moveHead() {
@@ -125,6 +162,12 @@ function gameEnded(result){
     gameIsOn = false;
     clearInterval(setIntID);
     
+    if(score > maxScore){
+        maxScore = score;
+        localStorage.setItem("maxScore", maxScore);
+        updateMaxScoreDisplay();
+    }
+
     if(result == "won")
         won();
     else 
@@ -173,17 +216,18 @@ function eraseTail(){
 }
 
 function resetGame(){
-    score = 0;
-    headRow = 0;
+    score = 1;
+    headRow = Math.floor(dimensions/2);
     headCol = 0;
     tailRow = headRow;
     tailCol = headCol;
     trail = [];
     dir = "right";
-    tempDir = dir;
+    dirQueue = [dir];
     $(".cell").removeClass("body")
               .removeClass("dead")
               .removeClass("apple");
+    updateScoreDisplay();
 }
 
 function fill() {
