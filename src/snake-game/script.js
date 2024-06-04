@@ -23,6 +23,7 @@ const gameOverContainer = $(".gameover-container");
 const startContainer = $(".start-container");
 const currentScoreDisplay = $(".current-score-display");
 const maxScoreDisplay = $(".max-score-display");
+const optionsContainer = $(".options-container");
 gameContainer.css("grid-template-columns", "repeat("+dimensions+", auto)");
 gameOverContainer.hide();
 
@@ -32,9 +33,20 @@ if(localStorage.getItem("maxScore") != null){
     localStorage.setItem("maxScore", 0);
 }
 
+setVolume(($("#volume-slider").val()) / 100);
 updateScoreDisplay();
-updateMaxScoreDisplay()
+updateMaxScoreDisplay();
 fill();
+
+$("#volume-slider").on("change", function(){
+    setVolume(this.value / 100);
+});
+
+function setVolume(newVolume){
+    startAudio.volume = newVolume;
+    eatAudio.volume = newVolume;
+    deadAudio.volume = newVolume;
+}
 
 $(document).on("keydown", function(e){
     if(e.key == " "){
@@ -71,12 +83,14 @@ function orderToReset(){
     resetGame();
     gameOverContainer.hide();
     startContainer.show();
+    optionsContainer.show();
     gameIsWaiting = true;
 }
 
 function orderToStart(){
     gameIsWaiting = false;
     startContainer.hide();
+    optionsContainer.hide();
     startGame();
 }
 
