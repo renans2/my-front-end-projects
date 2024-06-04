@@ -1,5 +1,13 @@
 const dimensions = 25;
-const delay = 65;
+const normalSpeedDelay = 110;
+const normalSpeedMode = "(NORMAL SPEED)";
+const fastSpeedDelay = 65;
+const fastSpeedMode = "(FAST SPEED)";
+const extremeSpeedDelay = 50;
+const extremeSpeedMode = "(EXTREME SPEED)";
+let currentMaxScoreMode = "maxScoreNormalSpeed";
+let currentMode = normalSpeedMode;
+let delay = normalSpeedDelay;
 let score = 1;
 let maxScore = 0;
 let gameIsWaiting = true;
@@ -27,19 +35,58 @@ const optionsContainer = $(".options-container");
 gameContainer.css("grid-template-columns", "repeat("+dimensions+", auto)");
 gameOverContainer.hide();
 
-if(localStorage.getItem("maxScore") != null){
-    maxScore = parseInt(localStorage.getItem("maxScore"));
-}else{
-    localStorage.setItem("maxScore", 0);
-}
+if(localStorage.getItem("maxScoreNormalSpeed") != null)
+    maxScore = parseInt(localStorage.getItem("maxScoreNormalSpeed"));
+else
+    localStorage.setItem("maxScoreNormalSpeed", 0);
+
+if(localStorage.getItem("maxScoreFastSpeed") == null)
+    localStorage.setItem("maxScoreFastSpeed", 0);
+
+if(localStorage.getItem("maxScoreExtremeSpeed") == null)
+    localStorage.setItem("maxScoreExtremeSpeed", 0);
 
 setVolume(($("#volume-slider").val()) / 100);
 updateScoreDisplay();
 updateMaxScoreDisplay();
 fill();
 
+$(".radio-speed").on("click", function(){
+    const speed = this.value;
+
+    switch(speed){
+        case "normal":  
+            delay = normalSpeedDelay; 
+            currentMaxScoreMode = "maxScoreNormalSpeed";
+            currentMode = normalSpeedMode;
+            maxScore = parseInt(localStorage.getItem(currentMaxScoreMode));
+            break;
+
+        case "fast":    
+            delay = fastSpeedDelay;
+            currentMaxScoreMode = "maxScoreFastSpeed";
+            currentMode = fastSpeedMode;
+            maxScore = parseInt(localStorage.getItem(currentMaxScoreMode));
+            break;
+
+        case "extreme": 
+            delay = extremeSpeedDelay;
+            currentMaxScoreMode = "maxScoreExtremeSpeed";
+            currentMode = extremeSpeedMode;
+            maxScore = parseInt(localStorage.getItem(currentMaxScoreMode));
+            break;
+
+        default: 
+            break;
+    }
+
+    updateMaxScoreDisplay();
+});
+
 $("#volume-slider").on("change", function(){
     setVolume(this.value / 100);
+    eatAudio.currentTime = 0;
+    eatAudio.play();
 });
 
 function setVolume(newVolume){
@@ -130,7 +177,7 @@ function updateScoreDisplay(){
 }
 
 function updateMaxScoreDisplay(){
-    maxScoreDisplay.html("MAX SCORE: <em class='max-score'>" + maxScore + "</em>");
+    maxScoreDisplay.html(`<em class='mode'>${currentMode}</em> <div class='max-score-div'>MAX SCORE: <em class='max-score'>${maxScore}</em></div>`);
 }
 
 function playAudio(audio){
@@ -178,7 +225,7 @@ function gameEnded(result){
     
     if(score > maxScore){
         maxScore = score;
-        localStorage.setItem("maxScore", maxScore);
+        localStorage.setItem(currentMaxScoreMode, maxScore);
         updateMaxScoreDisplay();
     }
 
