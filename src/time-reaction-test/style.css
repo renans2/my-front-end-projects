@@ -1,0 +1,42 @@
+*{
+    padding: 0;
+    margin: 0;
+    user-select: none;
+
+    font-family: "Anta", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+body{
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+}
+
+#inspiration{
+    position: absolute;
+    top: 5%;
+    color: white;
+    text-shadow: 0 0 10px black;
+}
+
+a{
+    color: aqua;
+}
+
+.container{
+    font-size: 70px;
+    color: white;
+    text-align: center;
+    text-shadow: 3px 3px 3px rgb(198, 198, 198),
+                 6px 6px 6px rgb(149, 149, 149),
+                 9px 9px 9px rgb(79, 79, 79);
+}
+
+.default{ background-color: rgb(0, 93, 233); }
+.waiting{ background-color: rgb(212, 0, 0);  }
+.green  { background-color: rgb(0, 216, 29); }

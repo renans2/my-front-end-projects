@@ -30,6 +30,7 @@ body{
     font-style: italic;
     white-space: pre-wrap;
     color: white;
+    text-align: justify;
 }
 
 .max-wpm{
