@@ -13,13 +13,11 @@ body{
 .white-text{color: white;}
 .black-text{color: black;}
 .light-off{background-color: black;}
-.light-on{background-color: rgb(255, 255, 255);}
-.off{left: 5%;}
-.on{left: 53%;}
+.light-on{background-color: white;}
 .background-off{background-color: red;}
 .background-on{background-color: green;}
 
-#toggle-me{
+#toggle-me-text{
     font-family: "Roboto", sans-serif;
     font-weight: 700;
     font-style: normal;  
@@ -37,32 +35,35 @@ body{
 
 .round-sides{
     border-radius: 100%;
-    width: 150px;
+    width: 50%;
 }
 
 #middle-rectangle{
     position: absolute;
-    width: 150px;
+    width: 50%;
 }
 
 .toggle-background{
-    height: 150px;
+    height: 100%;
     transition: background-color 0.3s;
 }
 
 #toggle-circle{
     position: absolute;
-    width: 125px;
-    height: 125px;
+    width: 40%;
+    height: 80%;
     border-radius: 100%;
     background-color: white;
-    transition: left 0.5s;
+    transition: transform 0.5s;
 }
+
+.off{transform: translate(-60%, 0%);}
+.on{transform: translate(60%, 0%);}
 
 #trail{
     position: absolute;
     border-radius: 10px;
-    width: 200px;
-    height: 20px;
+    width: 80%;
+    height: 10%;
     background-color: rgba(0, 0, 0, 0.584);
 }
