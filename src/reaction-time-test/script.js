@@ -1,5 +1,5 @@
 const minWait = 2; // in seconds
-const maxWait = 5; // in seconds
+const maxWait = 6; // in seconds
 let timeToWait;    // in milliseconds
 let waitingToGreen = false;
 let waitingToClick = false;
