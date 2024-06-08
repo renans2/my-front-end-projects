@@ -1,198 +1,118 @@
-const colors = ["red", 
-                "orange", 
-                "yellow", 
-                "green", 
-                "blue", 
-                "violet"];
-const audios = [new Audio("audios/0.mp3"),
-                new Audio("audios/1.mp3"),
-                new Audio("audios/2.mp3"),
-                new Audio("audios/3.mp3"),
-                new Audio("audios/4.mp3"),
-                new Audio("audios/5.mp3")];
-let sequence = [];
-let sequenceIndex = 0;
-let gameStarted = false;
-let gameIsOver = false;
-let isShowingSequence = false;
-let buttonsClicked = 0;
-let roundsPlayed = 0;
-let sleepThenShowId;
-let setIntervalId;
-const delay = 500;
-const buttons = $(".button");
+let canClick = true;
+const timeShowingCells = 700;
+const dimensions = 4;
+const container = $(".container");
+let selected = null;
 
-$("#display-round").hide();
-$("#display-gameover").hide();
-$("#play-again").hide();
+container.css("grid-template-columns", `repeat(${dimensions}, auto)`);
 
-setListeners();
-addNextToSequence();
+let array = [];
+const offset = 360 / ((dimensions * dimensions)/2) 
+for (let i = 0; i < (dimensions * dimensions)/2; i++) {
+    const color = `hsl(${i* offset}, 100%, 50%)`;
+    const cell1 = $(`<div id='${2*i}' class='cell ${i}'>
+                        <div class='back'></div>
+                        <div class='front'></div>
+                     </div>`); cell1.find(".back").css("background-color", color);
+    const cell2 = $(`<div id='${2*i+1}' class='cell ${i}'>
+                        <div class='back'></div>
+                        <div class='front'></div>
+                     </div>`); cell2.find(".back").css("background-color", color);
 
-function setListeners(){
-    $("#start-button").on("click", function(){
-        gameStarted = true;
-        $(this).hide();
-        $("#display-round").show();
-        updateRoundText();
-        showSequence();
-    });
+    array.push(cell1); array.push(cell2);
+}
+array = shuffle(array);
 
-    $("#play-again").on("click", function(){
-        resetAll();
-        $(this).hide();
-        $("#display-gameover").hide();
-        $("#start-button").show()
-    });
-
-    buttons.on("mouseenter", function(){
-        if(canClickOrHover()){
-            whenIsHovered(this);
-        }else{
-            $(this).css("cursor", "not-allowed");
-        }
-    });
-
-    buttons.on("mousemove", function(){
-        if(canClickOrHover()){
-            whenIsHovered(this);
-        }else{
-            $(this).css("cursor", "not-allowed");
-        }
-    });
-
-    buttons.on("mouseleave", function(){
-        if(canClickOrHover())
-            $(this).css("background-color", "white");
-    });
-
-    buttons.on("click", function(){
-        if(canClickOrHover()){
-            $(this).css("background-color", colors[parseInt(this.id)]);
-            buttonClicked(parseInt(this.id));
-        }
-    });
-
-    buttons.on("mousedown", function(){
-        if(canClickOrHover())
-            $(this).addClass("button-active");
-    });
-
-    buttons.on("mouseup", function(){
-        $(this).removeClass("button-active");
-    });
+for(const cell of array){
+    container.append(cell);
 }
 
-function updateRoundText(){
-    $("#display-round").text("Round " + roundsPlayed);   
-}
+$(".cell").on("click", function(){
+    if(isClicable(this)){
+        const front = getFront(this);
+        const back  = getBack(this);
 
-function whenIsHovered(button){
-    $(button).css("background-color", colors[parseInt(button.id)]);
-    $(button).css("cursor", "pointer");
-}
-
-function buttonClicked(buttonId){
-    if(buttonId != sequence[buttonsClicked]){
-        gameOver();
-    }else{
-        buttonsClicked++;
-        audios[buttonId].currentTime = 0;
-        audios[buttonId].play();
-        if(buttonsClicked == sequence.length)
-            newRound();
+        if(selected != null && notTheSameCell(this)){
+            flip(front, back);
+            if(cellsMatch(this))
+                caseMatch(this);
+            else
+                caseDoesNotMatch(front, back);
+        }else if(selected == null){
+            flip(front, back);
+            selected = {
+                cell: $(this),
+                front: front,
+                back: back
+            }
+        }
     }
+});
+
+function notTheSameCell(current){
+    return $(current).attr("id") != selected.cell.attr("id")
 }
 
-function canClickOrHover(){
-    return gameStarted && !gameIsOver && !isShowingSequence;
+function isClicable(current){
+    return canClick && !$(current).hasClass("found")
 }
 
-function gameOver(){
-    gameIsOver = true;
-    $("#display-round").hide();
-    $("#display-gameover").show();
-    $("#display-gameover").text("Game Over! You played for " + roundsPlayed + " rounds");
-    $("#play-again").show();
+function getFront(current){
+    return $(current).find(".front");
 }
 
-function newRound(){
-    roundsPlayed++;
-    updateRoundText();
-    buttonsClicked = 0;
-    addNextToSequence();
-    showSequence();
+function getBack(current){
+    return $(current).find(".back");
 }
 
-function showSequence(){
-    buttons.addClass("button-locked");
-    makeAllWhite();
-    isShowingSequence = true;
-    sequenceIndex = 0;
-    sleepThenShowId = setInterval(sleepThenShowSequence, 750);
+function flip(front, back){
+    front.toggleClass("flip-front");
+    back.toggleClass("flip-back");
 }
 
-function sleepThenShowSequence() {
-    clearInterval(sleepThenShowId);
-    setIntervalId = setInterval(showSequenceAux, delay);
+function cellsMatch(current){
+    return $(current).attr("class") == selected.cell.attr("class");
 }
 
-function showSequenceAux() {
-    if(sequenceIndex > 0)
-        makePreviousButtonWhite(sequenceIndex)
+function caseMatch(current){
+    $(current).addClass("found");
+    selected.cell.addClass("found");
+    selected = null;
+}
 
-    if(sequenceIndex == sequence.length){
-        clearInterval(setIntervalId);
-        isShowingSequence = false;
-        buttons.removeClass("button-locked");
-    }else{
-        colorizeButton(sequenceIndex);
-        playSound(sequenceIndex);
-        sequenceIndex++;
+function caseDoesNotMatch(front, back){
+    canClick = false;
+    setTimeout(function(){
+        selected.cell.removeClass("selected");
+        selected.front.toggleClass("flip-front");
+        selected.back.toggleClass("flip-back");
+        front.toggleClass("flip-front");
+        back.toggleClass("flip-back");
+        canClick = true;
+        selected = null;
+    }, timeShowingCells);
+}
+
+function shuffle(array){
+    tempArray = [];
+
+    for (let i = array.length; i > 0; i--) {
+        const index = getRandomIndex(i);
+        tempArray.push(array[index]);
+        array.splice(index, 1);
     }
+
+    return tempArray;
 }
 
-function playSound(idx) {
-    audios[sequence[idx]].currentTime = 0;
-    audios[sequence[idx]].play();
+function getRandomIndex(max){
+    return Math.floor(Math.random() * max);
 }
 
-function resetAll(){
-    makeAllWhite();
-    sequence = [];
-    sequenceIndex = 0;
-    gameStarted = false;
-    gameIsOver = false;
-    isShowingSequence = false;
-    buttonsClicked = 0;
-    roundsPlayed = 0;
-    addNextToSequence();
+function getRandomColor(){
+    return `rgb(${getRandomValue()}, ${getRandomValue()}, ${getRandomValue()})`
 }
 
-function makeAllWhite(){
-    buttons.css("background-color", "white");
-}
-
-function makePreviousButtonWhite(idx){
-    getButtonIdAtSequence(idx - 1).css("background-color", "white");
-}
-
-function colorizeButton(idx){
-    getButtonIdAtSequence(idx).css("background-color", getColor(idx));
-}
-
-function getButtonIdAtSequence(idx){
-    return $("#" + sequence[idx]);
-}
-
-function getColor(index){
-    return colors[sequence[index]];
-}
-
-function addNextToSequence(){
-    sequence.push(getNext());
-}
-
-function getNext(){
-    return Math.floor(Math.random() * colors.length);
+function getRandomValue(){
+    return Math.floor(Math.random() * 256);
 }
