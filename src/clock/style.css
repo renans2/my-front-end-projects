@@ -1,3 +1,8 @@
+@font-face {
+    font-family: seven-segment;
+    src: url(seven-segment.ttf);
+}
+
 body{
     width: 100vw;
     height: 100vh;
@@ -42,7 +47,6 @@ body{
     width: 175px;
     height: 100%;
     border: 2px solid black;
-    border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,7 +71,6 @@ body{
     align-items: center;
     justify-content: space-evenly;
     border: 2px solid black;
-    border-radius: 20px;
 }
 
 #display{
@@ -77,20 +80,19 @@ body{
     background-color: rgb(0, 0, 0);
     width: 90%;
     height: 40%;
-    border-radius: 20px;
     transition: height 0.3s;
 }
 
 #display-text{
-    font-size: 70px;
-    color: rgb(72, 255, 0);
-    text-shadow: 0 0 20px rgb(34, 203, 0);
+    font-family: seven-segment;
+    font-size: 100px;
+    color: rgb(255, 0, 0);
+    text-shadow: 0 0 10px rgb(142, 0, 0);
 }
 
 .stopwatch-buttons-container{
     background-color: rgb(165, 165, 165);
     border: 2px solid black;
-    border-radius: 10px;
     width: 90%;
     height: 40%;
     display: flex;
@@ -99,7 +101,6 @@ body{
 }
 
 .stopwatch-buttons{
-    border-radius: 20px;
     background-color: rgb(232, 244, 255);
     border: 2px solid black;
     width: 200px;
