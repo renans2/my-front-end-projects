@@ -4,6 +4,7 @@
 }
 
 body{
+    background-color: black;
     width: 100vw;
     height: 100vh;
     margin: 0;
@@ -12,6 +13,7 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    user-select: none;
 }
 
 .button{
@@ -43,7 +45,7 @@ body{
 }
 
 .modes{
-    background-color: rgb(232, 244, 255);
+    background-color: rgb(122, 122, 122);
     width: 175px;
     height: 100%;
     border: 2px solid black;
@@ -63,7 +65,7 @@ body{
 }
 
 .main-container{
-    background-color: rgb(232, 244, 255);
+    background-color: rgb(102, 102, 102);
     width: 550px;
     height: 300px;
     display: flex;
@@ -83,11 +85,21 @@ body{
     transition: height 0.3s;
 }
 
-#display-text{
+#display-text, #display-text-background{
     font-family: seven-segment;
     font-size: 100px;
-    color: rgb(255, 0, 0);
+}
+
+#display-text{
+    z-index: 1;
+    color: red;
     text-shadow: 0 0 10px rgb(142, 0, 0);
+}
+
+#display-text-background{
+    position: absolute;
+    z-index: 0;
+    color: rgb(19, 19, 19);
 }
 
 .stopwatch-buttons-container{
@@ -101,7 +113,7 @@ body{
 }
 
 .stopwatch-buttons{
-    background-color: rgb(232, 244, 255);
+    background-color: rgb(210, 210, 210);
     border: 2px solid black;
     width: 200px;
     height: 80px;
