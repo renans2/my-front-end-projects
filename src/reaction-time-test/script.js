@@ -1,3 +1,7 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
 const minWait = 2; // in seconds
 const maxWait = 6; // in seconds
 let timeToWait;    // in milliseconds

@@ -1,6 +1,5 @@
 /**
- * Developed by Renan Silva
- * GitHub: renans2
+ * @author Renan Silva (renans2 on GitHub)
  */
 
 const HORIZONTAL_TOP    = [1,2,3];

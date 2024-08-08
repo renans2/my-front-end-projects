@@ -1,4 +1,8 @@
-const colors = ["red", 
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
+const colors = ["red",
                 "orange", 
                 "yellow", 
                 "green", 

@@ -1,3 +1,7 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
 const dimensions = 25;
 const normalSpeedDelay = 110;
 const normalSpeedMode = "(NORMAL SPEED)";

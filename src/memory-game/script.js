@@ -1,3 +1,7 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
 let canClick = true;
 const timeShowingCells = 700;
 const dimensions = 4;

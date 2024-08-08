@@ -1,3 +1,7 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
 let mouseIsDown = false;
 let currentColor = "rgb(0, 0, 0)";
 let currentColorDiv = $("#c21");

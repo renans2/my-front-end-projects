@@ -1,3 +1,7 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
 const validKeys = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.:,; Backspace";
 const phrase = "Beneath the starry sky, the gentle whisper of the wind through the trees brings a serene connection to the universe.";
 let playerInput = "";

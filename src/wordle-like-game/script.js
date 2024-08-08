@@ -1,3 +1,7 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
 const wordStr = "caixa";
 const word = [...wordStr];
 const lettersByRow = 5;

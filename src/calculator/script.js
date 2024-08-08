@@ -1,3 +1,7 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
 let val1 = 0;
 let val2 = 0;
 let operator = "";

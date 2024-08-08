@@ -1,3 +1,7 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
 const body = $("body");
 const toggleCircle = $("#toggle-circle");
 const toggleBackgroud = $(".toggle-background");
