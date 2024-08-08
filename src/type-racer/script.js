@@ -85,11 +85,11 @@ function caseBackspace(){
 function caseValidKey(key){
     playerInput += key;
         
-    if(index == lastCorrectIndex && playerInput.charAt(index) == phrase.charAt(index)){
-        if(forwardIndex == lastCorrectIndex){
+    if(index === lastCorrectIndex && playerInput.charAt(index) === phrase.charAt(index)){
+        if(forwardIndex === lastCorrectIndex){
             forwardIndex++;
             
-            if(phrase.charAt(forwardIndex) == " "){
+            if(phrase.charAt(forwardIndex) === " "){
                 wordCounter++;
                 updateWordsPerMinute();
             }
@@ -101,7 +101,7 @@ function caseValidKey(key){
     index++;
     updatePlayerInputDisplay();
 
-    if(index == lastCorrectIndex && index == phrase.length){
+    if(index === lastCorrectIndex && index === phrase.length){
         over = true;
         wordCounter++;
         updateWordsPerMinute();

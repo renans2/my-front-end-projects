@@ -14,9 +14,9 @@ function update(){
 
 function incSeconds(){
     seconds = (seconds + 1) % 60;
-    if(seconds == 0){
+    if(seconds === 0){
         minutes = (minutes + 1) % 60;
-        if(minutes == 0)
+        if(minutes === 0)
             hours = (hours + 1) % 24;
     }
 }

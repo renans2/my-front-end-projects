@@ -33,7 +33,7 @@ $(".key").on("click", function(){
         const letterDiv = grid[currentRow][currentCol++];
         letterDiv.text($(this).text());
     
-        if(currentCol == lettersByRow)
+        if(currentCol === lettersByRow)
             $(".enter").toggleClass("enter-locked enter-available");
     }
 });
@@ -67,7 +67,7 @@ function updateAndCheckIfWon(){
     }else{
         currentCol = 0;
         currentRow++;
-        if(currentRow == rows){
+        if(currentRow === rows){
             gameIsOver = true;
             console.log("you lost!!!");
         }
@@ -145,7 +145,7 @@ function addClassToLetterDivAndKey(col, letter, className){
 
     const key = $(".key").filter((_, letterDiv) => $(letterDiv).text().toLowerCase() === letter);
     
-    if(className == "letter-green"){
+    if(className === "letter-green"){
         key.removeClass("key-yellow");
         key.removeClass("key-red");
         key.addClass("key-green");
@@ -172,7 +172,7 @@ function getClassForKey(className){
 
 function allGreens() {
     return grid[currentRow].filter(letterDiv => letterDiv.hasClass("letter-green"))
-                           .length == lettersByRow;
+                           .length === lettersByRow;
 }
 
 function colorNotDefinedLetter(letterDiv) {
@@ -189,5 +189,5 @@ function colorNotDefinedKey(keyDiv) {
 
 function sameLetter(letterDiv, letter){
     return letterDiv.text()
-                    .toLowerCase() == letter;
+                    .toLowerCase() === letter;
 }

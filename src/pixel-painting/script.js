@@ -79,13 +79,11 @@ $("#redo").on("click", function(){
 });
 
 function getCellInfoObj(cell, currentColor){
-    const cellInfo = {
+    return {
         cell: cell,
         previousColor: $(cell).css("background-color"),
         currentColor: currentColor
     };
-
-    return cellInfo;
 }
 
 function pushIfNotPresent(cell, currentColor){

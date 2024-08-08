@@ -164,5 +164,5 @@ function changePlayer(){
 }
 
 function isPlayerOne(){
-    return currentPlayer == 0;
+    return currentPlayer === 0;
 }

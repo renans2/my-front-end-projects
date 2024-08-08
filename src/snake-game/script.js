@@ -100,7 +100,7 @@ function setVolume(newVolume){
 }
 
 $(document).on("keydown", function(e){
-    if(e.key == " "){
+    if(e.key === " "){
         if(gameIsWaiting)
             orderToStart();
         else if(!gameIsOn && !gameIsWaiting) //when the game is over
@@ -190,7 +190,7 @@ function playAudio(audio){
 }
 
 function hasWon(){
-    return score == dimensions * dimensions;
+    return score === dimensions * dimensions;
 }
 
 function updateDir() {
@@ -199,10 +199,10 @@ function updateDir() {
     if(dirQueue.length > 0){
         tempDir = dirQueue.shift();
 
-        if((dir == "up"    && tempDir != "down") ||
-           (dir == "right" && tempDir != "left") ||
-           (dir == "down"  && tempDir != "up")   ||
-           (dir == "left"  && tempDir != "right"))
+        if((dir === "up"    && tempDir !== "down") ||
+           (dir === "right" && tempDir !== "left") ||
+           (dir === "down"  && tempDir !== "up")   ||
+           (dir === "left"  && tempDir !== "right"))
            dir = tempDir;
     }
 }
@@ -233,7 +233,7 @@ function gameEnded(result){
         updateMaxScoreDisplay();
     }
 
-    if(result == "won")
+    if(result === "won")
         won();
     else 
         lost();

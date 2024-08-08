@@ -32,7 +32,7 @@ for(const cell of array){
 }
 
 $(".cell").on("click", function(){
-    if(isClicable(this)){
+    if(isClickable(this)){
         const front = getFront(this);
         const back  = getBack(this);
 
@@ -54,10 +54,10 @@ $(".cell").on("click", function(){
 });
 
 function notTheSameCell(current){
-    return $(current).attr("id") != selected.cell.attr("id")
+    return $(current).attr("id") !== selected.cell.attr("id")
 }
 
-function isClicable(current){
+function isClickable(current){
     return canClick && !$(current).hasClass("found")
 }
 
@@ -75,7 +75,7 @@ function flip(front, back){
 }
 
 function cellsMatch(current){
-    return $(current).attr("class") == selected.cell.attr("class");
+    return $(current).attr("class") === selected.cell.attr("class");
 }
 
 function caseMatch(current){
@@ -98,7 +98,7 @@ function caseDoesNotMatch(front, back){
 }
 
 function shuffle(array){
-    tempArray = [];
+    let tempArray = [];
 
     for (let i = array.length; i > 0; i--) {
         const index = getRandomIndex(i);
@@ -111,12 +111,4 @@ function shuffle(array){
 
 function getRandomIndex(max){
     return Math.floor(Math.random() * max);
-}
-
-function getRandomColor(){
-    return `rgb(${getRandomValue()}, ${getRandomValue()}, ${getRandomValue()})`
-}
-
-function getRandomValue(){
-    return Math.floor(Math.random() * 256);
 }
