@@ -30,13 +30,3 @@ function getFormattedTime(){
            minutes.toString().padStart(2, "0") + ":" + 
            seconds.toString().padStart(2, "0");
 }
-
-$("#clock").on("click", function(){
-    $(".stopwatch-buttons-container").css("display", "none");
-    $("#display").css("height", "90%");
-});
-
-$("#stopwatch").on("click", function(){
-    $(".stopwatch-buttons-container").css("display", "flex");
-    $("#display").css("height", "40%");
-});
