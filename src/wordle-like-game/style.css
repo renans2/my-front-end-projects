@@ -20,7 +20,7 @@
 
 body{
     background-color: var(--background);
-    min-width: 100vw;
+    /*min-width: 100vw;*/
     min-height: 100vh;
     overflow: auto;
     display: flex;
@@ -36,6 +36,32 @@ body{
 
 .words-container{
     margin-bottom: 30px;
+}
+
+.gameover-popup{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px 0;
+    font-size: 35px;
+    border-radius: 10px;
+    background-color: var(--red);
+    margin-bottom: 30px;
+}
+
+.green-gameover-popup{
+    background-color: var(--green);
+}
+
+#play-again-button{
+    margin-top: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    color: black;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .row, .keyboard-row{

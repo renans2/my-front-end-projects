@@ -2,8 +2,13 @@
  * @author Renan Silva (renans2 on GitHub)
  */
 
-const wordStr = "caixa";
-const word = [...wordStr];
+let allWords;
+let wordStr;
+let word;
+$.get("words.txt", function(text) {
+    allWords = text.split("\n");
+    setNewWord();
+});
 const lettersByRow = 5;
 const rows = 6;
 let grid = [];
@@ -13,6 +18,8 @@ let currentRow = 0;
 let currentCol = 0;
 
 fill();
+const gameOverPopUp = $(".gameover-popup");
+gameOverPopUp.hide();
 
 function fill(){
     for (let i = 0; i < rows; i++){
@@ -54,6 +61,17 @@ $(".backspace").on("click", function(){
     }
 });
 
+$("#play-again-button").on("click", function(){
+    gameOverPopUp.hide();
+    currentRow = 0;
+    currentCol = 0;
+    setNewWord();
+    $(".letter").text("");
+    $(".letter").removeClass("letter-green letter-yellow letter-red");
+    $(".key").removeClass("key-green key-yellow key-red");
+    gameIsOver = false;
+});
+
 function updateAndCheckIfWon(){
     paintAllReds();
     paintAllGreens();
@@ -63,13 +81,18 @@ function updateAndCheckIfWon(){
 
     if(won){
         gameIsOver = true;
-        console.log("you won!!!");
+        $("#gameover-message").html(`You won, the word was "${wordStr}"`);
+        gameOverPopUp.addClass("green-gameover-popup");
+        gameOverPopUp.show();
+
     }else{
         currentCol = 0;
         currentRow++;
         if(currentRow === rows){
             gameIsOver = true;
-            console.log("you lost!!!");
+            $("#gameover-message").html(`You lost, the word was "${wordStr}"`);
+            gameOverPopUp.removeClass("green-gameover-popup");
+            gameOverPopUp.show();
         }
     }
 }
@@ -190,4 +213,14 @@ function colorNotDefinedKey(keyDiv) {
 function sameLetter(letterDiv, letter){
     return letterDiv.text()
                     .toLowerCase() === letter;
+}
+
+function setNewWord(){
+    wordStr = allWords[getRandomWordIndex()];
+    word = [...wordStr];
+    console.log(wordStr);
+}
+
+function getRandomWordIndex(){
+    return Math.floor(Math.random() * allWords.length);
 }
