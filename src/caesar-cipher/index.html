@@ -1,0 +1,46 @@
+<!-- @author Renan Silva (renans2 on GitHub) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <title>Caesar Cipher</title>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title">Caesar Cipher</h1>
+
+        <div class="textarea-container">
+            <label for="input">Text to be ciphered:</label>
+            <textarea id="input" placeholder="Your text here"></textarea>
+        </div>
+
+        <div id="options">
+            <div class="shift-amount">
+                <label for="shift-amount-select">Shift amount: </label>
+                <select id="shift-amount-select"></select>
+            </div>
+
+            <div class="shift-direction">
+                <label for="shift-direction-select">Shift direction: </label>
+                <select id="shift-direction-select">
+                    <option value="right">right</option>
+                    <option value="left">left</option>
+                </select>
+            </div>
+
+            <button id="cipher-button">Submit</button>
+        </div>
+
+        <div class="textarea-container">
+            <label for="output">Text ciphered:</label>
+            <textarea id="output" placeholder="Ciphered text will show up here" disabled></textarea>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

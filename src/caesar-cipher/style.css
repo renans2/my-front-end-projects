@@ -1,0 +1,108 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000;
+    font-family: monospace;
+}
+
+body{
+    min-height:100vh;
+    background: black;
+}
+
+.container{
+    border: 2px solid #ff0000;
+    width: 57%;
+    height: 80%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#title{
+    font-size: 70px;
+    font-family: monospace;
+    font-weight: normal;
+}
+
+label{
+    font-size: 25px;
+    margin-right: 10px;
+}
+
+#options{
+    width: 80%;
+    height: 10%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+select{
+    width: 100px;
+    height: 30px;
+    font-size: 20px;
+    background: black;
+}
+
+.shift-amount, .shift-direction{
+    display: flex;
+}
+
+#cipher-button{
+    width: 110px;
+    height: 45px;
+    font-size: 25px;
+    border: 1px solid white;
+    color: white;
+    background-color: red;
+}
+
+#cipher-button:hover{
+    background-color: #ff3d3d;
+    cursor: pointer;
+}
+
+#cipher-button:active{
+    background-color: black;
+    color: red;
+}
+
+textarea{
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    resize: none;
+    font-size: 20px;
+    background-color: rgba(0,0,0,0);
+    color: white;
+}
+
+.textarea-container{
+    width: 80%;
+}
+
+#input{
+    border: 2px solid #ff0000;
+}
+
+#input:focus{
+    background-color: #0a0a0a;
+}
+
+#output{
+    border: 1px solid #ff0000;
+}
