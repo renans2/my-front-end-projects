@@ -11,34 +11,38 @@
 </head>
 <body>
     <div class="container">
-        <h1 id="title">Caesar Cipher</h1>
-
-        <div class="textarea-container">
-            <label for="input">Text to be ciphered:</label>
-            <textarea id="input" placeholder="Your text here"></textarea>
-        </div>
+        <header>
+            <h1 id="title">Caesar Cipher</h1>
+            <code>The encrypt/decrypt process only affect alphabet characters, all other characters will remain unchanged.</code>
+        </header>
 
         <div id="options">
+            <div class="type">
+                <label for="type-select">Type:</label>
+                <select id="type-select">
+                    <option value="encrypt">encrypt</option>
+                    <option value="decrypt">decrypt</option>
+                </select>
+            </div>
+
             <div class="shift-amount">
                 <label for="shift-amount-select">Shift amount: </label>
                 <select id="shift-amount-select"></select>
             </div>
 
-            <div class="shift-direction">
-                <label for="shift-direction-select">Shift direction: </label>
-                <select id="shift-direction-select">
-                    <option value="right">right</option>
-                    <option value="left">left</option>
-                </select>
-            </div>
-
-            <button id="cipher-button">Submit</button>
+            <button id="cipher-button">Encrypt</button>
         </div>
 
         <div class="textarea-container">
-            <label for="output">Text ciphered:</label>
-            <textarea id="output" placeholder="Ciphered text will show up here" disabled></textarea>
+            <label for="input">Text to be encrypted:</label>
+            <textarea id="input" placeholder="Place your input text here"></textarea>
         </div>
+
+        <div class="textarea-container">
+            <label for="output">Encrypted text:</label>
+            <textarea id="output" placeholder="The resulting text will show up here" disabled></textarea>
+        </div>
+
     </div>
 
     <script src="script.js"></script>

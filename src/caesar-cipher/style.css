@@ -19,7 +19,7 @@ body{
 .container{
     border: 2px solid #ff0000;
     width: 57%;
-    height: 80%;
+    height: 100%;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -28,6 +28,12 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    align-items: center;
+}
+
+header{
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
@@ -47,23 +53,23 @@ label{
     height: 10%;
 
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
 }
 
 select{
-    width: 100px;
+    width: 130px;
     height: 30px;
     font-size: 20px;
     background: black;
 }
 
-.shift-amount, .shift-direction{
+.shift-amount, .type{
     display: flex;
 }
 
 #cipher-button{
-    width: 110px;
+    width: 115px;
     height: 45px;
     font-size: 25px;
     border: 1px solid white;
@@ -83,7 +89,7 @@ select{
 
 textarea{
     width: 100%;
-    height: 100px;
+    height: 200px;
     padding: 10px;
     resize: none;
     font-size: 20px;
