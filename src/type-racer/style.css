@@ -23,6 +23,34 @@ body{
     align-items: center;
 }
 
+code, code a{
+    margin-top: 10px;
+    font-size: 20px;
+    font-family: monospace;
+}
+
+code a{
+    color: #8200ff;
+}
+
+.container{
+    /*background-color: #8200ff;*/
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.stats-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .phrase-container{
     padding: 20px;
     width: 800px;
@@ -72,7 +100,8 @@ body{
     background-color: green;
 }
 
-#try-again{
+button{
+    margin-top: 10px;
     font-weight: 900;
     padding: 10px;
     border-radius: 10px;
@@ -80,6 +109,6 @@ body{
     cursor: pointer;
 }
 
-#try-again:hover{
+button:hover{
     background-color: rgb(186, 186, 186);
 }

@@ -2,8 +2,10 @@
  * @author Renan Silva (renans2 on GitHub)
  */
 
-const validKeys = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.:,; Backspace";
-const phrase = "Beneath the starry sky, the gentle whisper of the wind through the trees brings a serene connection to the universe.";
+const validKeys = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.:,; Backspace";
+let phrase;
+let author;
+setNewPhrase();
 let playerInput = "";
 let index = 0;
 let lastCorrectIndex = 0;
@@ -16,17 +18,25 @@ let setIntID;
 let wordsPerMinute = 0;
 let maxWordsPerMinute = "0.00";
 
-if(localStorage.getItem("maxWpm") == null)
-    localStorage.setItem("maxWpm", "0.00");
-else
-    maxWordsPerMinute = localStorage.getItem("maxWpm");
-
 $(".max-wpm-div").html(`max wpm = <em class='max-wpm'>${maxWordsPerMinute}</em>`);
 $(".wpm-div").html(`<em id='start-typing'>Start typing</em>`);
-$(".phrase-container").html(`<p id='phrase'>${phrase}</p>`);
 $("#try-again").hide();
 
 $("#try-again").on("click", function(){
+    reset();
+    $(".phrase-container").html(`<p id='phrase'>${phrase}</p>`);
+    $(this).hide();
+});
+
+$("#new-phrase").on("click", function(){
+    maxWordsPerMinute = "0.00";
+    $(".max-wpm-div").html(`max wpm = <em class='max-wpm'>${maxWordsPerMinute}</em>`);
+    clearInterval(setIntID);
+    reset();
+    setNewPhrase();
+});
+
+function reset(){
     playerInput = "";
     index = 0;
     lastCorrectIndex = 0;
@@ -36,11 +46,17 @@ $("#try-again").on("click", function(){
     started = false;
     over = false;
     wordsPerMinute = 0;
-    $(".phrase-container").html(`<p id='phrase'>${phrase}</p>`);
     $(".phrase-container").removeClass("over");
-    $(".wpm-div").html(`wpm = <em class='wpm'>0</em>`);
-    $(this).hide();
-});
+    $(".wpm-div").html(`<em id='start-typing'>Start typing</em>`);
+}
+
+function setNewPhrase(){
+    $.get("https://api.quotable.io/random", function(data){
+        author = data.author
+        phrase = data.content + " - " + author;
+        $(".phrase-container").html(`<p id='phrase'>${phrase}</p>`);
+    });
+}
 
 $(document).on("keydown", function(e){
     if(!over && validKeys.includes(e.key)){
