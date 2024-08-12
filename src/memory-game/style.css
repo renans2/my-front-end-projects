@@ -11,10 +11,35 @@ body{
     min-width: 100vw;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     overflow: auto;
     user-select: none;
+}
+
+span{
+    font-family: monospace;
+    font-size: 25px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.gameover-container{
+    display: flex;
+}
+
+#play-again-button{
+    width: 125px;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #00ff00;
+    border-radius: 10px;
+}
+
+#play-again-button:hover{
+    background-color: #a8ffa8;
+    cursor: pointer;
 }
 
 .container{
@@ -26,11 +51,13 @@ body{
 .cell{
     position: relative;
     margin: 5%;
+    perspective: 300px;
 }
 
 .back, .front{
     border: 2px solid black;
-    border-radius: 20%;
+    border-radius: 10%;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
     position: absolute;
     width: 100%;
     height: 100%;
@@ -39,8 +66,15 @@ body{
 }
 
 .back{
-    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
     transform: rotateX(-180deg);
+}
+
+.back img{
+    width: 90%;
 }
 
 .front{
