@@ -9,9 +9,35 @@ currentColorDiv.addClass("color-hover");
 let lastCellsPaintedHistory = [];
 let historyIndex = 0;
 let lastCellsPainted = [];
+let dimension = 50;
+$(".pixels-container").css("grid-template-columns", "repeat("+dimension+", auto)");
+
+for (let i = 0; i < dimension; i++) {
+    for (let j = 0; j < dimension; j++) {
+        const cell = $("<div class='cell'></div>");
+        $(".pixels-container").append(cell);
+    }
+}
 
 const colors = $(".color");
-const cells = $(".cell");
+let cells = $(".cell");
+setListeners();
+
+$("#dimension-select").on("change", function() {
+    $(".cell").remove();
+    dimension = parseInt($("#dimension-select").val());
+    $(".pixels-container").css("grid-template-columns", "repeat("+dimension+", auto)");
+
+    for (let i = 0; i < dimension; i++) {
+        for (let j = 0; j < dimension; j++) {
+            const cell = $("<div class='cell'></div>");
+            $(".pixels-container").append(cell);
+        }
+    }
+
+    cells = $(".cell");
+    setListeners();
+});
 
 $(".pixels-container").on("mousedown", function(){
     mouseIsDown = true; 
@@ -38,18 +64,20 @@ colors.on("click", function(){
     currentColor = currentColorDiv.css("background-color");
 });
 
-cells.on("mousedown", function(){
-    lastCellsPainted = [];
-    pushIfNotPresent(this, currentColor);
-    $(this).css("background-color", currentColor);
-});
-
-cells.on("mouseenter", function(){
-    if(mouseIsDown){
+function setListeners(){
+    cells.on("mousedown", function(){
+        lastCellsPainted = [];
         pushIfNotPresent(this, currentColor);
         $(this).css("background-color", currentColor);
-    }
-});
+    });
+
+    cells.on("mouseenter", function(){
+        if(mouseIsDown){
+            pushIfNotPresent(this, currentColor);
+            $(this).css("background-color", currentColor);
+        }
+    });
+}
 
 $("#clear").on("click", function(){
     lastCellsPainted = [];

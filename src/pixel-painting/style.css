@@ -8,13 +8,23 @@
 }
 
 body{
-    min-width: 100vw;
     min-height: 100vh;
     overflow: auto;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     user-select: none;
+}
+
+.dimension-container{
+    font-size: 20px;
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.dimension-container label{
+    margin-right: 10px;
 }
 
 .container{
@@ -87,7 +97,6 @@ body{
 .pixels-container{
     border: 2px solid black;
     display: grid;
-    grid-template-columns: repeat(50, auto);
     width: fit-content;
     height: fit-content;
 }
