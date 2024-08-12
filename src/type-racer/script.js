@@ -29,6 +29,7 @@ $("#try-again").on("click", function(){
 });
 
 $("#new-phrase").on("click", function(){
+    $("#try-again").hide();
     maxWordsPerMinute = "0.00";
     $(".max-wpm-div").html(`max wpm = <em class='max-wpm'>${maxWordsPerMinute}</em>`);
     clearInterval(setIntID);
