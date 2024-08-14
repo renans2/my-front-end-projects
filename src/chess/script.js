@@ -72,6 +72,11 @@ $(".white-piece").on("click", function(){
        const piece = $(this).attr("data-piece");
 
        let options = highlightAndReturnOptions(piece, i, j);
+       for (const option of options) {
+           const tempI = option.i;
+           const tempJ = option.j;
+           $(board[tempI][tempJ]).css("background-color", "black");
+       }
        console.log(options);
        console.log(i);
    }
@@ -93,6 +98,8 @@ function highlightAndReturnOptions(piece, i, j){
     switch(piece){
         case "pawn-black"  : return casePawn(i, j, "black");
         case "pawn-white"  : return casePawn(i, j, "white");
+        case "knight-black": return caseKnight(i, j, "black");
+        case "knight-white": return caseKnight(i, j, "white");
         case "rook-black"  : return caseRook(i, j, "black");
         case "rook-white"  : return caseRook(i, j, "white");
         case "bishop-black": return caseBishop(i, j, "black");
@@ -104,62 +111,154 @@ function highlightAndReturnOptions(piece, i, j){
     }
 }
 
+function caseKnight(i, j, color){
+    let options = [];
+
+    if(i-2 >= 0 && j-1 >= 0 && ((color === "white" && !$(board[i-2][j-1]).hasClass("white-piece")) || (color === "black" && !$(board[i-2][j-1]).hasClass("black-piece"))))
+        options.push({i: i-2, j: j-1});
+    if(i-1 >= 0 && j-2 >= 0 && ((color === "white" && !$(board[i-1][j-2]).hasClass("white-piece")) || (color === "black" && !$(board[i-1][j-2]).hasClass("black-piece"))))
+        options.push({i: i-1, j: j-2});
+    if(i+1 <= 7 && j-2 >= 0 && ((color === "white" && !$(board[i+1][j-2]).hasClass("white-piece")) || (color === "black" && !$(board[i+1][j-2]).hasClass("black-piece"))))
+        options.push({i: i+1, j: j-2});
+    if(i+2 <= 7 && j-1 >= 0 && ((color === "white" && !$(board[i+2][j-1]).hasClass("white-piece")) || (color === "black" && !$(board[i+2][j-1]).hasClass("black-piece"))))
+        options.push({i: i+2, j: j-1});
+    if(i-2 >= 0 && j+1 <= 7 && ((color === "white" && !$(board[i-2][j+1]).hasClass("white-piece")) || (color === "black" && !$(board[i-2][j+1]).hasClass("black-piece"))))
+        options.push({i: i-2, j: j+1});
+    if(i-1 >= 0 && j+2 <= 7 && ((color === "white" && !$(board[i-1][j+2]).hasClass("white-piece")) || (color === "black" && !$(board[i-1][j+2]).hasClass("black-piece"))))
+        options.push({i: i-1, j: j+2});
+    if(i+1 <= 7 && j+2 <= 7 && ((color === "white" && !$(board[i+1][j+2]).hasClass("white-piece")) || (color === "black" && !$(board[i+1][j+2]).hasClass("black-piece"))))
+        options.push({i: i+1, j: j+2});
+    if(i+2 <= 7 && j+1 <= 7 && ((color === "white" && !$(board[i+2][j+1]).hasClass("white-piece")) || (color === "black" && !$(board[i+2][j+1]).hasClass("black-piece"))))
+        options.push({i: i+2, j: j+1});
+
+    return options;
+}
+
 function casePawn(i, j, color){
     let options = [];
 
     if(color === "white" && i > 0){
-        if(j-1 >= 0 && $(board[i-1][j-1]).hasClass("black-piece")){
-            options.push({
-                i: i-1,
-                j: j-1
-            });
-        }
-        if(j+1 <= 7 && $(board[i-1][j+1]).hasClass("black-piece")){
-            options.push({
-                i: i-1,
-                j: j+1
-            });
-        }
-        if(!$(board[i-1][j]).hasClass("black-piece white-piece")){
-            options.push({
-                i: i-1,
-                j: j
-            });
-        }
+        if(j-1 >= 0 && $(board[i-1][j-1]).hasClass("black-piece"))
+            options.push({i: i-1, j: j-1});
+        if(j+1 <= 7 && $(board[i-1][j+1]).hasClass("black-piece"))
+            options.push({i: i-1, j: j+1});
+        if(!$(board[i-1][j]).hasClass("black-piece") && !$(board[i-1][j]).hasClass("white-piece"))
+            options.push({i: i-1, j: j});
     } else if(color === "black" && i < 7){
-        if(j-1 >= 0 && $(board[i+1][j-1]).hasClass("white-piece")){
-            options.push({
-                i: i+1,
-                j: j-1
-            });
-        }
-        if(j+1 <= 7 && $(board[i+1][j+1]).hasClass("white-piece")){
-            options.push({
-                i: i+1,
-                j: j+1
-            });
-        }
-        if($(board[i+1][j]).hasClass("black-piece white-piece")){
-            options.push({
-                i: i+1,
-                j: j
-            });
-        }
+        if(j-1 >= 0 && $(board[i+1][j-1]).hasClass("white-piece"))
+            options.push({i: i+1, j: j-1});
+        if(j+1 <= 7 && $(board[i+1][j+1]).hasClass("white-piece"))
+            options.push({i: i+1, j: j+1});
+        if(!$(board[i+1][j]).hasClass("black-piece") && !$(board[i+1][j]).hasClass("white-piece"))
+            options.push({i: i+1, j: j});
     }
 
     return options;
 }
 
 function caseRook(i, j, color){
+    let options = [];
 
+    let tempJ = j+1;
+    // Right
+    while(tempJ <= 7 && !$(board[i][tempJ]).hasClass("black-piece") && !$(board[i][tempJ]).hasClass("white-piece")){
+        options.push({i: i, j: tempJ});
+        tempJ += 1;
+    }
+    if(tempJ <= 7 && (($(board[i][tempJ]).hasClass("black-piece") && color === "white") ||
+                      ($(board[i][tempJ]).hasClass("white-piece") && color === "black")))
+        options.push({i: i, j: tempJ});
+
+    tempJ = j-1;
+    // Left
+    while(tempJ >= 0 && !$(board[i][tempJ]).hasClass("black-piece") && !$(board[i][tempJ]).hasClass("white-piece")){
+        options.push({i: i, j: tempJ});
+        tempJ -= 1;
+    }
+    if(tempJ >= 0 && (($(board[i][tempJ]).hasClass("black-piece") && color === "white") ||
+                      ($(board[i][tempJ]).hasClass("white-piece") && color === "black")))
+        options.push({i: i, j: tempJ});
+
+    let tempI = i-1;
+    // Up
+    while(tempI >= 0 && !$(board[tempI][j]).hasClass("black-piece") && !$(board[tempI][j]).hasClass("white-piece")){
+        options.push({i: tempI, j: j});
+        tempI -= 1;
+    }
+    if(tempI >= 0 && (($(board[tempI][j]).hasClass("black-piece") && color === "white") ||
+                      ($(board[tempI][j]).hasClass("white-piece") && color === "black")))
+        options.push({i: tempI, j: j});
+
+    tempI = i+1;
+    // Down
+    while(tempI <= 7 && !$(board[tempI][j]).hasClass("black-piece") && !$(board[tempI][j]).hasClass("white-piece")){
+        options.push({i: tempI, j: j});
+        tempI += 1;
+    }
+    if(tempI <= 7 && (($(board[tempI][j]).hasClass("black-piece") && color === "white") ||
+                      ($(board[tempI][j]).hasClass("white-piece") && color === "black")))
+        options.push({i: tempI, j: j});
+
+    return options;
 }
 
 function caseBishop(i, j, color){
+    let options = [];
 
+    let tempI = i-1;
+    let tempJ = j+1;
+    // Diagonal up-right
+    while(tempI >= 0 && tempJ <= 7 && !$(board[tempI][tempJ]).hasClass("black-piece") && !$(board[tempI][tempJ]).hasClass("white-piece")){
+        options.push({i: tempI, j: tempJ});
+        tempI -= 1;
+        tempJ += 1;
+    }
+    if(tempI >= 0 && tempJ <= 7 && (($(board[tempI][tempJ]).hasClass("black-piece") && color === "white") ||
+                                    ($(board[tempI][tempJ]).hasClass("white-piece") && color === "black")))
+        options.push({i: tempI, j: tempJ});
+
+    tempI = i-1;
+    tempJ = j-1;
+    // Diagonal up-left
+    while(tempI >= 0 && tempJ >= 0 && !$(board[tempI][tempJ]).hasClass("black-piece") && !$(board[tempI][tempJ]).hasClass("white-piece")){
+        options.push({i: tempI, j: tempJ});
+        tempI -= 1;
+        tempJ -= 1;
+    }
+    if(tempI >= 0 && tempJ >= 0 && (($(board[tempI][tempJ]).hasClass("black-piece") && color === "white") ||
+                                    ($(board[tempI][tempJ]).hasClass("white-piece") && color === "black")))
+        options.push({i: tempI, j: tempJ});
+
+    tempI = i+1;
+    tempJ = j+1;
+    // Diagonal down-right
+    while(tempI <= 7 && tempJ <= 7 && !$(board[tempI][tempJ]).hasClass("black-piece") && !$(board[tempI][tempJ]).hasClass("white-piece")){
+        options.push({i: tempI, j: tempJ});
+        tempI += 1;
+        tempJ += 1;
+    }
+    if(tempI <= 7 && tempJ <= 7 && (($(board[tempI][tempJ]).hasClass("black-piece") && color === "white") ||
+                                    ($(board[tempI][tempJ]).hasClass("white-piece") && color === "black")))
+        options.push({i: tempI, j: tempJ});
+
+    tempI = i+1;
+    tempJ = j-1;
+    // Diagonal down-left
+    while(tempI <= 7 && tempJ >= 0 && !$(board[tempI][tempJ]).hasClass("black-piece") && !$(board[tempI][tempJ]).hasClass("white-piece")){
+        options.push({i: tempI, j: tempJ});
+        tempI += 1;
+        tempJ -= 1;
+    }
+    if(tempI <= 7 && tempJ >= 0 && (($(board[tempI][tempJ]).hasClass("black-piece") && color === "white") ||
+                                    ($(board[tempI][tempJ]).hasClass("white-piece") && color === "black")))
+        options.push({i: tempI, j: tempJ});
+
+    return options;
 }
 
 function caseQueen(i, j, color){
-
+    // The Queen is a mix of Rook and Bishop
+    return caseRook(i, j, color).concat(caseBishop(i, j, color));
 }
 
 function caseKing(i, j, color){
@@ -172,10 +271,7 @@ function caseKing(i, j, color){
                 0 <= l && l <= 7){
                 if(color === "white" && !$(board[k][l]).hasClass("white-piece") ||
                    color === "black" && !$(board[k][l]).hasClass("black-piece"))
-                    options.push({
-                        i: k,
-                        j: l
-                    });
+                        options.push({i: k, j: l});
             }
 
     return options;
