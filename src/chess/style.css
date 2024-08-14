@@ -29,6 +29,11 @@ body{
     background-repeat: no-repeat;
 }
 
+.highlighted{
+    outline: 5px solid red;
+    outline-offset: -7px;
+}
+
 /*.square:hover{*/
 /*    background-size: 110%;*/
 /*}*/

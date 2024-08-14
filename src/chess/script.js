@@ -3,6 +3,8 @@
  */
 
 let turn = 0;
+let selectedPiece = null;
+let options = []
 let board = [];
 fillBoardWithDivs();
 setStartingPositions();
@@ -65,22 +67,81 @@ function setStartingPositions(){
     $(board[7][4]).attr("data-piece", "king-white");
 }
 
-$(".white-piece").on("click", function(){
-   if(turn === 0){
-       const i     = parseInt($(this).attr("data-i"));
-       const j     = parseInt($(this).attr("data-j"));
-       const piece = $(this).attr("data-piece");
+$(".square").on("click", function(){
+    if(($(this).hasClass("white-piece") && selectedPiece != null && turn === 1) ||
+       ($(this).hasClass("black-piece") && selectedPiece != null && turn === 0) ||
+       (!$(this).hasClass("white-piece") && !$(this).hasClass("black-piece") && selectedPiece != null)){
+        const i = parseInt($(this).attr("data-i"));
+        const j = parseInt($(this).attr("data-j"));
 
-       let options = highlightAndReturnOptions(piece, i, j);
-       for (const option of options) {
-           const tempI = option.i;
-           const tempJ = option.j;
-           $(board[tempI][tempJ]).css("background-color", "black");
-       }
-       console.log(options);
-       console.log(i);
-   }
+        for (const option of options) {
+            if(option.i === i && option.j === j){
+                $(board[i][j]).attr("data-piece", $(selectedPiece).attr("data-piece"));
+                $(selectedPiece).removeAttr("data-piece");
+                if($(selectedPiece).hasClass("white-piece")){
+                    $(selectedPiece).removeClass("white-piece");
+                    $(board[i][j]).addClass("white-piece");
+                    $(board[i][j]).removeClass("black-piece");
+                } else {
+                    $(selectedPiece).removeClass("black-piece");
+                    $(board[i][j]).addClass("black-piece");
+                    $(board[i][j]).removeClass("white-piece");
+                }
+                turnOffOptions();
+                changeTurn();
+                break;
+            }
+        }
+    } else if(($(this).hasClass("white-piece") && turn === 0)){
+        const i = parseInt($(this).attr("data-i"));
+        const j = parseInt($(this).attr("data-j"));
+
+        if(selectedPiece != null){
+            turnOffOptions();
+        }
+
+        selectedPiece = $(this);
+        const piece = $(this).attr("data-piece");
+
+        options = returnOptions(piece, i, j);
+        highLightOptions();
+    } else if(($(this).hasClass("black-piece") && turn === 1)){
+        const i = parseInt($(this).attr("data-i"));
+        const j = parseInt($(this).attr("data-j"));
+
+        if(selectedPiece != null){
+            turnOffOptions();
+        }
+
+        selectedPiece = $(this);
+        const piece = $(this).attr("data-piece");
+
+        options = returnOptions(piece, i, j);
+        highLightOptions();
+    }
 });
+
+function changeTurn(){
+    options = [];
+    selectedPiece = null;
+    turn = (turn + 1) % 2;
+}
+
+function highLightOptions(){
+    for (const option of options) {
+        const tempI = option.i;
+        const tempJ = option.j;
+        $(board[tempI][tempJ]).addClass("highlighted");
+    }
+}
+
+function turnOffOptions(){
+    for (const option of options) {
+        const tempI = option.i;
+        const tempJ = option.j;
+        $(board[tempI][tempJ]).removeClass("highlighted");
+    }
+}
 
 // $(".black").on("click", function(){
 //     if(turn === 1){
@@ -94,7 +155,7 @@ $(".white-piece").on("click", function(){
 //     }
 // });
 
-function highlightAndReturnOptions(piece, i, j){
+function returnOptions(piece, i, j){
     switch(piece){
         case "pawn-black"  : return casePawn(i, j, "black");
         case "pawn-white"  : return casePawn(i, j, "white");
