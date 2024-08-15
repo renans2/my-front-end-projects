@@ -42,8 +42,16 @@ body{
     background-color: #7142e3;
 }
 
+.black-square-highlighted{
+    background-color: #e34242;
+}
+
 .white-square{
     background-color: #c4adee;
+}
+
+.white-square-highlighted{
+    background-color: #e69b9b;
 }
 
 .knight{

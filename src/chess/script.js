@@ -6,8 +6,130 @@ let turn = 0;
 let selectedPiece = null;
 let options = []
 let board = [];
+let gameIsOver = false;
 fillBoardWithDivs();
 setStartingPositions();
+
+$(".square").on("click", function(){
+    const square = $(this);
+    const i = parseInt(square.attr("data-i"));
+    const j = parseInt(square.attr("data-j"));
+
+    if(triesToMove(square)){
+        for (const option of options){
+            if(squareIsInOptions(option, i, j)){
+                const movingPieceColor = selectedPiece.hasClass("white-piece") ? "white" : "black";
+                makeMove(square);
+                verifyCheckMate(movingPieceColor);
+                toggleHighlightedSquares();
+                changeTurn();
+                break;
+            }
+        }
+    } else if(selectedOtherPiece(square)){
+        if(selectedPiece != null)
+            toggleHighlightedSquares();
+
+        selectedPiece = square;
+        const piece = square.attr("data-piece");
+
+        options = returnOptions(piece, i, j);
+        toggleHighlightedSquares();
+    }
+});
+
+function verifyCheckMate(movingPieceColor){
+    let allOptions = [];
+
+    $(`.${movingPieceColor}-piece`).each(function(){
+        allOptions = allOptions.concat(returnOptions($(this).attr("data-piece"),
+                                                     parseInt($(this).attr("data-i")),
+                                                     parseInt($(this).attr("data-j"))));
+    });
+
+    let kingOptions = [];
+    let king;
+    let piece;
+
+    if(movingPieceColor === "white"){
+        piece = "king-black";
+        king = $("[data-piece='king-black']").first();
+    } else {
+        piece = "king-white";
+        king = $("[data-piece='king-white']").first();
+    }
+
+    const kingI = parseInt(king.attr("data-i"));
+    const kingJ = parseInt(king.attr("data-j"));
+
+    kingOptions.push({i: kingI, j: kingJ});
+    kingOptions = kingOptions.concat(returnOptions(piece, kingI, kingJ));
+
+    let hasSafeOption = false;
+
+    for (const kingOption of kingOptions)
+        if(kingOptionIsSafe(kingOption, allOptions)){
+            hasSafeOption = true;
+            break;
+        }
+
+    if(!hasSafeOption){
+        gameIsOver = true;
+        console.log("over");
+    }
+}
+
+function kingOptionIsSafe(kingPosition, allOptions){
+    for (const option of allOptions) {
+        if(option.i === kingPosition.i &&
+           option.j === kingPosition.j)
+            return false;
+    }
+
+    return true;
+}
+
+function triesToMove(square){
+    return selectedPiece != null &&
+        (blackTriesToCaptureWhite(square) ||
+            (whiteTriesToCaptureBlack(square)) ||
+            (isFreeSquare(square)));
+}
+
+function blackTriesToCaptureWhite(square){
+    return square.hasClass("white-piece") && turn === 1;
+}
+
+function whiteTriesToCaptureBlack(square){
+    return square.hasClass("black-piece") && turn === 0;
+}
+
+function isFreeSquare(square){
+    return !square.hasClass("white-piece") && !square.hasClass("black-piece");
+}
+
+function squareIsInOptions(option, i, j){
+    return option.i === i && option.j === j;
+}
+
+function makeMove(square){
+    square.attr("data-piece", selectedPiece.attr("data-piece"));
+    selectedPiece.removeAttr("data-piece");
+
+    if(selectedPiece.hasClass("white-piece")){
+        selectedPiece.removeClass("white-piece");
+        square.addClass("white-piece");
+        square.removeClass("black-piece");
+    } else {
+        selectedPiece.removeClass("black-piece");
+        square.addClass("black-piece");
+        square.removeClass("white-piece");
+    }
+}
+
+function selectedOtherPiece(square){
+    return (square.hasClass("white-piece") && turn === 0) || (square.hasClass("black-piece") && turn === 1);
+}
 
 function fillBoardWithDivs(){
     for (let i = 0; i < 8; i++) {
@@ -67,93 +189,25 @@ function setStartingPositions(){
     $(board[7][4]).attr("data-piece", "king-white");
 }
 
-$(".square").on("click", function(){
-    if(($(this).hasClass("white-piece") && selectedPiece != null && turn === 1) ||
-       ($(this).hasClass("black-piece") && selectedPiece != null && turn === 0) ||
-       (!$(this).hasClass("white-piece") && !$(this).hasClass("black-piece") && selectedPiece != null)){
-        const i = parseInt($(this).attr("data-i"));
-        const j = parseInt($(this).attr("data-j"));
-
-        for (const option of options) {
-            if(option.i === i && option.j === j){
-                $(board[i][j]).attr("data-piece", $(selectedPiece).attr("data-piece"));
-                $(selectedPiece).removeAttr("data-piece");
-                if($(selectedPiece).hasClass("white-piece")){
-                    $(selectedPiece).removeClass("white-piece");
-                    $(board[i][j]).addClass("white-piece");
-                    $(board[i][j]).removeClass("black-piece");
-                } else {
-                    $(selectedPiece).removeClass("black-piece");
-                    $(board[i][j]).addClass("black-piece");
-                    $(board[i][j]).removeClass("white-piece");
-                }
-                turnOffOptions();
-                changeTurn();
-                break;
-            }
-        }
-    } else if(($(this).hasClass("white-piece") && turn === 0)){
-        const i = parseInt($(this).attr("data-i"));
-        const j = parseInt($(this).attr("data-j"));
-
-        if(selectedPiece != null){
-            turnOffOptions();
-        }
-
-        selectedPiece = $(this);
-        const piece = $(this).attr("data-piece");
-
-        options = returnOptions(piece, i, j);
-        highLightOptions();
-    } else if(($(this).hasClass("black-piece") && turn === 1)){
-        const i = parseInt($(this).attr("data-i"));
-        const j = parseInt($(this).attr("data-j"));
-
-        if(selectedPiece != null){
-            turnOffOptions();
-        }
-
-        selectedPiece = $(this);
-        const piece = $(this).attr("data-piece");
-
-        options = returnOptions(piece, i, j);
-        highLightOptions();
-    }
-});
-
 function changeTurn(){
     options = [];
     selectedPiece = null;
     turn = (turn + 1) % 2;
 }
 
-function highLightOptions(){
+function toggleHighlightedSquares(){
     for (const option of options) {
         const tempI = option.i;
         const tempJ = option.j;
-        $(board[tempI][tempJ]).addClass("highlighted");
+        const square = $(board[tempI][tempJ]);
+
+        if(square.hasClass("black-square") || square.hasClass("black-square-highlighted"))
+            square.toggleClass("black-square black-square-highlighted");
+
+        else
+            square.toggleClass("white-square white-square-highlighted");
     }
 }
-
-function turnOffOptions(){
-    for (const option of options) {
-        const tempI = option.i;
-        const tempJ = option.j;
-        $(board[tempI][tempJ]).removeClass("highlighted");
-    }
-}
-
-// $(".black").on("click", function(){
-//     if(turn === 1){
-//         const i     = parseInt($(this).attr("data-i"));
-//         const j     = parseInt($(this).attr("data-j"));
-//         const piece = $(this).attr("data-piece");
-//
-//         let options = highlightAndReturnOptions(piece, i, j);
-//         console.log(options);
-//         console.log(i);
-//     }
-// });
 
 function returnOptions(piece, i, j){
     switch(piece){
@@ -325,8 +379,8 @@ function caseQueen(i, j, color){
 function caseKing(i, j, color){
     let options = [];
 
-    for (let k = i-1; k < i+1; k++)
-        for (let l = j-1; l < j+1; l++)
+    for (let k = i-1; k <= i+1; k++)
+        for (let l = j-1; l <= j+1; l++)
             if((k !== i || l !== j) &&
                 0 <= k && k <= 7    &&
                 0 <= l && l <= 7){
@@ -337,9 +391,3 @@ function caseKing(i, j, color){
 
     return options;
 }
-
-// $(".square").each(function(){
-//     const i = $(this).attr("data-i");
-//     const j = $(this).attr("data-j");
-//     console.log(i + " " + j);
-// });
