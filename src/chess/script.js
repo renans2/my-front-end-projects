@@ -6,6 +6,7 @@ let turn = 0;
 let selectedPiece = null;
 let options = []
 let board = [];
+let boardCopy = [];
 let gameIsOver = false;
 fillBoardWithDivs();
 setStartingPositions();
@@ -19,11 +20,16 @@ $(".square").on("click", function(){
         for (const option of options){
             if(squareIsInOptions(option, i, j)){
                 const movingPieceColor = selectedPiece.hasClass("white-piece") ? "white" : "black";
-                makeMove(square);
-                verifyCheckMate(movingPieceColor);
-                toggleHighlightedSquares();
-                changeTurn();
-                break;
+                makeBoardCopyAndMakeMove(square);
+                if(!leavesKingInCheck(movingPieceColor)){
+                    makeMove(square);
+                    verifyCheckMate(movingPieceColor);
+                    toggleHighlightedSquares();
+                    changeTurn();
+                    break;
+                }else{
+                    console.log("cant do that");
+                }
             }
         }
     } else if(selectedOtherPiece(square)){
@@ -33,10 +39,78 @@ $(".square").on("click", function(){
         selectedPiece = square;
         const piece = square.attr("data-piece");
 
-        options = returnOptions(piece, i, j);
+        options = returnOptions(piece, i, j, board);
         toggleHighlightedSquares();
     }
 });
+
+function makeBoardCopyAndMakeMove(square){
+    const iSquare = parseInt(square.attr("data-i"));
+    const jSquare = parseInt(square.attr("data-j"));
+    const iSelectedPiece = parseInt(selectedPiece.attr("data-i"));
+    const jSelectedPiece = parseInt(selectedPiece.attr("data-j"));
+
+    for(let i = 0; i < board.length; i++){
+        boardCopy[i] = [];
+        for (let j = 0; j < board[i].length; j++) {
+            boardCopy[i][j] = board[i][j].clone();
+        }
+    }
+
+    boardCopy[iSquare][jSquare].attr("data-piece", boardCopy[iSelectedPiece][jSelectedPiece].attr("data-piece"));
+    boardCopy[iSelectedPiece][jSelectedPiece].removeAttr("data-piece");
+
+    if(boardCopy[iSelectedPiece][jSelectedPiece].hasClass("white-piece")){
+        boardCopy[iSelectedPiece][jSelectedPiece].removeClass("white-piece");
+        boardCopy[iSquare][jSquare].addClass("white-piece");
+        boardCopy[iSquare][jSquare].removeClass("black-piece");
+    } else {
+        boardCopy[iSelectedPiece][jSelectedPiece].removeClass("black-piece");
+        boardCopy[iSquare][jSquare].addClass("black-piece");
+        boardCopy[iSquare][jSquare].removeClass("white-piece");
+    }
+}
+
+function leavesKingInCheck(movingPieceColor){
+    const adversaryColor = movingPieceColor === "white" ? "black-piece" : "white-piece";
+    const kingColor = movingPieceColor === "white" ? "king-white" : "king-black";
+    let kingI, kingJ;
+
+    for (let i = 0; i < boardCopy.length; i++) {
+        for (let j = 0; j < boardCopy[i].length; j++) {
+            if(boardCopy[i][j].attr("data-piece") === kingColor){
+                kingI = i;
+                kingJ = j;
+            }
+        }
+    }
+
+    for (let i = 0; i < boardCopy.length; i++) {
+        for (let j = 0; j < boardCopy[i].length; j++) {
+            if(boardCopy[i][j].hasClass(adversaryColor)){
+                for (const option of returnOptions(boardCopy[i][j].attr("data-piece"),i,j,boardCopy)) {
+                    if(option.i === kingI && option.j === kingJ)
+                        return true;
+                }
+            }
+        }
+    }
+}
+
+function makeMove(square){
+    square.attr("data-piece", selectedPiece.attr("data-piece"));
+    selectedPiece.removeAttr("data-piece");
+
+    if(selectedPiece.hasClass("white-piece")){
+        selectedPiece.removeClass("white-piece");
+        square.addClass("white-piece");
+        square.removeClass("black-piece");
+    } else {
+        selectedPiece.removeClass("black-piece");
+        square.addClass("black-piece");
+        square.removeClass("white-piece");
+    }
+}
 
 function verifyCheckMate(movingPieceColor){
     let allOptions = [];
@@ -44,7 +118,7 @@ function verifyCheckMate(movingPieceColor){
     $(`.${movingPieceColor}-piece`).each(function(){
         allOptions = allOptions.concat(returnOptions($(this).attr("data-piece"),
                                                      parseInt($(this).attr("data-i")),
-                                                     parseInt($(this).attr("data-j"))));
+                                                     parseInt($(this).attr("data-j")), board));
     });
 
     let kingOptions = [];
@@ -63,7 +137,7 @@ function verifyCheckMate(movingPieceColor){
     const kingJ = parseInt(king.attr("data-j"));
 
     kingOptions.push({i: kingI, j: kingJ});
-    kingOptions = kingOptions.concat(returnOptions(piece, kingI, kingJ));
+    kingOptions = kingOptions.concat(returnOptions(piece, kingI, kingJ, board));
 
     let hasSafeOption = false;
 
@@ -91,9 +165,7 @@ function kingOptionIsSafe(kingPosition, allOptions){
 
 function triesToMove(square){
     return selectedPiece != null &&
-        (blackTriesToCaptureWhite(square) ||
-            (whiteTriesToCaptureBlack(square)) ||
-            (isFreeSquare(square)));
+           (blackTriesToCaptureWhite(square) || whiteTriesToCaptureBlack(square) || isFreeSquare(square));
 }
 
 function blackTriesToCaptureWhite(square){
@@ -110,21 +182,6 @@ function isFreeSquare(square){
 
 function squareIsInOptions(option, i, j){
     return option.i === i && option.j === j;
-}
-
-function makeMove(square){
-    square.attr("data-piece", selectedPiece.attr("data-piece"));
-    selectedPiece.removeAttr("data-piece");
-
-    if(selectedPiece.hasClass("white-piece")){
-        selectedPiece.removeClass("white-piece");
-        square.addClass("white-piece");
-        square.removeClass("black-piece");
-    } else {
-        selectedPiece.removeClass("black-piece");
-        square.addClass("black-piece");
-        square.removeClass("white-piece");
-    }
 }
 
 function selectedOtherPiece(square){
@@ -209,24 +266,24 @@ function toggleHighlightedSquares(){
     }
 }
 
-function returnOptions(piece, i, j){
+function returnOptions(piece, i, j, board){
     switch(piece){
-        case "pawn-black"  : return casePawn(i, j, "black");
-        case "pawn-white"  : return casePawn(i, j, "white");
-        case "knight-black": return caseKnight(i, j, "black");
-        case "knight-white": return caseKnight(i, j, "white");
-        case "rook-black"  : return caseRook(i, j, "black");
-        case "rook-white"  : return caseRook(i, j, "white");
-        case "bishop-black": return caseBishop(i, j, "black");
-        case "bishop-white": return caseBishop(i, j, "white");
-        case "queen-black" : return caseQueen(i, j, "black");
-        case "queen-white" : return caseQueen(i, j, "white");
-        case "king-black"  : return caseKing(i, j, "black");
-        case "king-white"  : return caseKing(i, j, "white");
+        case "pawn-black"  : return casePawn(i, j, "black", board);
+        case "pawn-white"  : return casePawn(i, j, "white", board);
+        case "knight-black": return caseKnight(i, j, "black", board);
+        case "knight-white": return caseKnight(i, j, "white", board);
+        case "rook-black"  : return caseRook(i, j, "black", board);
+        case "rook-white"  : return caseRook(i, j, "white", board);
+        case "bishop-black": return caseBishop(i, j, "black", board);
+        case "bishop-white": return caseBishop(i, j, "white", board);
+        case "queen-black" : return caseQueen(i, j, "black", board);
+        case "queen-white" : return caseQueen(i, j, "white", board);
+        case "king-black"  : return caseKing(i, j, "black", board);
+        case "king-white"  : return caseKing(i, j, "white", board);
     }
 }
 
-function caseKnight(i, j, color){
+function caseKnight(i, j, color, board){
     let options = [];
 
     if(i-2 >= 0 && j-1 >= 0 && ((color === "white" && !$(board[i-2][j-1]).hasClass("white-piece")) || (color === "black" && !$(board[i-2][j-1]).hasClass("black-piece"))))
@@ -249,7 +306,7 @@ function caseKnight(i, j, color){
     return options;
 }
 
-function casePawn(i, j, color){
+function casePawn(i, j, color, board){
     let options = [];
 
     if(color === "white" && i > 0){
@@ -271,7 +328,7 @@ function casePawn(i, j, color){
     return options;
 }
 
-function caseRook(i, j, color){
+function caseRook(i, j, color, board){
     let options = [];
 
     let tempJ = j+1;
@@ -317,7 +374,7 @@ function caseRook(i, j, color){
     return options;
 }
 
-function caseBishop(i, j, color){
+function caseBishop(i, j, color, board){
     let options = [];
 
     let tempI = i-1;
@@ -371,12 +428,12 @@ function caseBishop(i, j, color){
     return options;
 }
 
-function caseQueen(i, j, color){
+function caseQueen(i, j, color, board){
     // The Queen is a mix of Rook and Bishop
-    return caseRook(i, j, color).concat(caseBishop(i, j, color));
+    return caseRook(i, j, color, board).concat(caseBishop(i, j, color, board));
 }
 
-function caseKing(i, j, color){
+function caseKing(i, j, color, board){
     let options = [];
 
     for (let k = i-1; k <= i+1; k++)
