@@ -23,7 +23,7 @@ $(".square").on("click", function(){
                 makeBoardCopyAndMakeMove(square);
                 if(!leavesKingInCheck(movingPieceColor)){
                     makeMove(square);
-                    verifyCheckMate(movingPieceColor);
+                    verifyCheckMate(square);
                     toggleHighlightedSquares();
                     changeTurn();
                     break;
@@ -112,8 +112,9 @@ function makeMove(square){
     }
 }
 
-function verifyCheckMate(movingPieceColor){
+function verifyCheckMate(square){
     let allOptions = [];
+    const movingPieceColor = square.hasClass("white-piece") ? "white-piece" : "black-piece";
 
     $(`.${movingPieceColor}-piece`).each(function(){
         allOptions = allOptions.concat(returnOptions($(this).attr("data-piece"),
@@ -147,10 +148,110 @@ function verifyCheckMate(movingPieceColor){
             break;
         }
 
-    if(!hasSafeOption){
+    if(!hasSafeOption && cantStopCheck(square, kingI, kingJ)){
         gameIsOver = true;
         console.log("over");
     }
+}
+
+function cantStopCheck(square, kingI, kingJ){
+    const piece = square.attr("data-piece");
+    const movingPieceI = parseInt(square.attr("data-i"));
+    const movingPieceJ = parseInt(square.attr("data-j"));
+    const movingPieceColor = square.hasClass("white-piece") ? "white" : "black";
+    const defenderColor = movingPieceColor === "white-piece" ? "black" : "white";
+
+    return cantGetInTheWay(piece, movingPieceColor, kingI, kingJ, movingPieceI, movingPieceJ, defenderColor) && cantCaptureAttacker(movingPieceI, movingPieceJ, defenderColor);
+}
+
+function cantGetInTheWay(piece, movingPieceColor, kingI, kingJ, movingPieceI, movingPieceJ, defenderColor){
+    if(piece === `knight-${movingPieceColor}` ||
+       piece === `pawn-${movingPieceColor}`   ||
+       piece === `king-${movingPieceColor}`){
+        return true;
+    } else {
+        const checkerOptions = getOptionsUntilKing(piece, movingPieceColor, kingI, kingJ, movingPieceI, movingPieceJ);
+        let defenderOptions = [];
+
+        $(`.${defenderColor}-piece`).each(function(){
+            defenderOptions = defenderOptions.concat(returnOptions($(this).attr("data-piece"),
+                parseInt($(this).attr("data-i")),
+                parseInt($(this).attr("data-j")), board));
+        });
+
+        for (const checkerOption of checkerOptions)
+            for (const defenderOption of defenderOptions)
+                if(checkerOption.i === defenderOption.i && checkerOption.j === defenderOption.j)
+                    return false;
+
+        return true;
+    }
+}
+
+function getOptionsUntilKing(piece, movingPieceColor, kingI, kingJ, movingPieceI, movingPieceJ){
+    let options = [];
+
+    const tempOptions = returnOptions(piece, movingPieceI, movingPieceJ, board);
+
+    if(kingI === movingPieceI){
+        if(kingJ > movingPieceJ){
+            for (const option of tempOptions)
+                if(option.i === kingI && option.j > movingPieceJ && option.j !== kingJ)
+                    options.push(option);
+        }else{
+            for (const option of tempOptions)
+                if(option.i === kingI && option.j < movingPieceJ && option.j !== kingJ)
+                    options.push(option);
+        }
+    } else if(kingJ === movingPieceJ){
+        if(kingI > movingPieceI){
+            for (const option of tempOptions)
+                if(option.j === kingJ && option.i > movingPieceI && option.i !== kingI)
+                    options.push(option);
+        }else{
+            for (const option of tempOptions)
+                if(option.j === kingJ && option.i < movingPieceI && option.i !== kingI)
+                    options.push(option);
+        }
+    } else if(kingI < movingPieceI){
+        if(kingJ < movingPieceJ){
+            for (const option of tempOptions)
+                if(option.i < movingPieceI && option.j < movingPieceJ && option.i !== kingI && option.j !== kingJ)
+                    options.push(option);
+        }else{
+            for (const option of tempOptions)
+                if(option.i < movingPieceI && option.j > movingPieceJ && option.i !== kingI && option.j !== kingJ)
+                    options.push(option);
+        }
+    } else if(kingI > movingPieceI){
+        if(kingJ < movingPieceJ){
+            for (const option of tempOptions)
+                if(option.i > movingPieceI && option.j < movingPieceJ && option.i !== kingI && option.j !== kingJ)
+                    options.push(option);
+        }else{
+            for (const option of tempOptions)
+                if(option.i > movingPieceI && option.j > movingPieceJ && option.i !== kingI && option.j !== kingJ)
+                    options.push(option);
+        }
+    }
+
+    return options;
+}
+
+function cantCaptureAttacker(movingPieceI, movingPieceJ, defenderColor){
+    let allOptions = [];
+
+    $(`.${defenderColor}-piece`).each(function(){
+        allOptions = allOptions.concat(returnOptions($(this).attr("data-piece"),
+            parseInt($(this).attr("data-i")),
+            parseInt($(this).attr("data-j")), board));
+    });
+
+    for (const option of allOptions)
+        if(option.i === movingPieceI && option.j === movingPieceJ)
+            return true;
+
+    return false;
 }
 
 function kingOptionIsSafe(kingPosition, allOptions){
