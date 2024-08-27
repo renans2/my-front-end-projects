@@ -2,9 +2,13 @@
  * @author Renan Silva (renans2 on GitHub)
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
 *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
     color: white;
     font-family: "JetBrains Mono", monospace;
     font-optical-sizing: auto;
@@ -34,15 +38,27 @@ code a{
 }
 
 .container{
-    /*background-color: #8200ff;*/
-    position: absolute;
-    left: 50%;
-    top: 40%;
-    transform: translate(-50%, -50%);
+    margin-top: 200px;
+    padding: 10px;
+    position: relative;
+    background-color: black;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.container::before{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    background-image: linear-gradient(to bottom right, #ff0000, #b000ff);
+    z-index: -1;
 }
 
 .stats-container{
@@ -55,14 +71,20 @@ code a{
     padding: 20px;
     width: 800px;
     height: fit-content;
-    border: 2px solid white;
+    background-color: black;
+    /*border: 2px solid white;*/
 }
 
 #phrase{
-    font-style: italic;
     white-space: pre-wrap;
     color: white;
     text-align: justify;
+
+    font-style: normal;
+    font-family: "Cormorant", serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-size: 1.3rem;
 }
 
 .max-wpm{
@@ -78,7 +100,11 @@ code a{
 }
 
 .correct, .incorrect, .rest{
-    font-style: italic;
+    font-style: normal;
+    font-family: "Cormorant", serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-size: 1.3rem;
 }
 
 .correct{

@@ -53,7 +53,7 @@ function reset(){
 
 function setNewPhrase(){
     $.get("https://api.quotable.io/random", function(data){
-        author = data.author
+        author = data.author;
         phrase = data.content + " - " + author;
         $(".phrase-container").html(`<p id='phrase'>${phrase}</p>`);
     });
