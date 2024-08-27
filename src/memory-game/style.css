@@ -5,10 +5,11 @@
 *{
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
+    color: white;
 }
 
 body{
-    min-width: 100vw;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -16,6 +17,7 @@ body{
     align-items: center;
     overflow: auto;
     user-select: none;
+    background-color: #000000;
 }
 
 span{
@@ -23,6 +25,28 @@ span{
     font-size: 25px;
     font-weight: bold;
     margin: 10px;
+}
+
+.message{
+    width: fit-content;
+    position: relative;
+    background-color: #000000;
+    padding: 10px;
+    border-radius: 1000px;
+}
+
+.message::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    padding: 3px;
+    background-image: linear-gradient(to bottom right, #6200ff, #b700ff);
+    z-index: -1;
+    border-radius: 1000px;
 }
 
 .gameover-container{
@@ -43,9 +67,10 @@ span{
 }
 
 .container{
+    position: relative;
     display: grid;
-    width: 700px;
-    height: 700px;
+    height: 80vh;
+    aspect-ratio: 1/1;
 }
 
 .cell{
@@ -55,30 +80,43 @@ span{
 }
 
 .back, .front{
-    border: 2px solid black;
-    border-radius: 10%;
-    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
     transition: transform 0.7s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7%;
+    background-image: linear-gradient(to bottom right, #6200ff, #b700ff);
+}
+
+.front:hover{
+    /*transform: scale(1.1);*/
+}
+
+.found{
+    cursor: not-allowed;
+}
+
+.found .back{
+    background-image: linear-gradient(to bottom right, #d900ff, #002fff);
 }
 
 .back{
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
     transform: rotateX(-180deg);
 }
 
 .back img{
     width: 90%;
-}
-
-.front{
-    background-color: white;
+    filter: drop-shadow(2px 2px 1px rgba(255, 255, 255, 0.2))
+            drop-shadow(-2px -2px 1px rgba(255, 255, 255, 0.2))
+    drop-shadow(-2px 2px 1px rgba(255, 255, 255, 0.2))
+    drop-shadow(2px -2px 1px rgba(255, 255, 255, 0.2));
 }
 
 .flip-front{
