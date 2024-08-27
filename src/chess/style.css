@@ -16,46 +16,48 @@ body{
 }
 
 .container{
-    border: 3px solid black;
-    width: 700px;
-    height: 700px;
+    border: 0.2rem solid black;
+    height: 90vh;
     display: grid;
     grid-template-columns: repeat(8, auto);
+    aspect-ratio: 1/1;
 }
 
 .square{
-    background-size: cover;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+    background-size: 100%;
     background-position: center;
     background-repeat: no-repeat;
 }
 
 .highlighted{
-    outline: 5px solid red;
-    outline-offset: -7px;
+    box-shadow: inset 0 0 25px red;
+    cursor: pointer;
 }
 
-/*.square:hover{*/
-/*    background-size: 110%;*/
-/*}*/
+.canHover{
+    transition: background-size 0.2s;
+}
+
+.canHover:hover{
+    background-size: 115%;
+    cursor: pointer;
+}
+
+.cannotHover{
+    cursor: not-allowed;
+}
+
+.highlighted.cannotHover{
+    cursor: pointer;
+}
 
 .black-square{
     background-color: #7142e3;
 }
 
-.black-square-highlighted{
-    background-color: #e34242;
-}
-
 .white-square{
     background-color: #c4adee;
-}
-
-.white-square-highlighted{
-    background-color: #e69b9b;
-}
-
-.knight{
-    /*background-image: url("");*/
 }
 
 [data-piece="king-black"]  { background-image: url(https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg); }

@@ -12,6 +12,8 @@ let gameIsOver = false;
 let squareTo, squareToPiece, squareToPieceColor, squareToI, squareToJ;
 fillBoardWithDivs();
 setStartingPositions();
+$(".white-piece").addClass("canHover");
+$(".black-piece").addClass("cannotHover");
 
 $(".square").on("click", function(){
     const square = $(this);
@@ -334,8 +336,19 @@ function setStartingPositions(){
 
 function changeTurn(){
     options = [];
+    $(selectedPiece).removeClass("canHover");
     selectedPiece = null;
     turn = (turn + 1) % 2;
+
+    if(turn === 1){
+        $(".white-piece").removeClass("canHover");
+        $(".white-piece").addClass("cannotHover");
+        $(".black-piece").toggleClass("canHover cannotHover");
+    } else {
+        $(".black-piece").removeClass("canHover");
+        $(".black-piece").addClass("cannotHover");
+        $(".white-piece").toggleClass("canHover cannotHover");
+    }
 }
 
 function toggleHighlightedSquares(){
@@ -344,12 +357,10 @@ function toggleHighlightedSquares(){
         const tempJ = option.j;
         const square = $(board[tempI][tempJ]);
 
-        if(square.hasClass("black-square") || square.hasClass("black-square-highlighted"))
-            square.toggleClass("black-square black-square-highlighted");
-
-        else
-            square.toggleClass("white-square white-square-highlighted");
+        square.toggleClass("highlighted");
     }
+
+    selectedPiece.toggleClass("highlighted");
 }
 
 function returnOptions(piece, i, j, board){
@@ -400,16 +411,21 @@ function casePawn(i, j, color, board){
             options.push({i: i-1, j: j-1});
         if(j+1 <= 7 && $(board[i-1][j+1]).hasClass("black-piece"))
             options.push({i: i-1, j: j+1});
-        if(!$(board[i-1][j]).hasClass("black-piece") && !$(board[i-1][j]).hasClass("white-piece"))
+        if(isFreeSquare($(board[i-1][j])))
             options.push({i: i-1, j: j});
     } else if(color === "black" && i < 7){
         if(j-1 >= 0 && $(board[i+1][j-1]).hasClass("white-piece"))
             options.push({i: i+1, j: j-1});
         if(j+1 <= 7 && $(board[i+1][j+1]).hasClass("white-piece"))
             options.push({i: i+1, j: j+1});
-        if(!$(board[i+1][j]).hasClass("black-piece") && !$(board[i+1][j]).hasClass("white-piece"))
+        if(isFreeSquare($(board[i+1][j])))
             options.push({i: i+1, j: j});
     }
+
+    if(color === "white" && i === 6 && isFreeSquare($(board[4][j])) && isFreeSquare($(board[5][j])))
+        options.push({i: 4, j: j});
+    else if(color === "black" && i === 1 && isFreeSquare($(board[3][j])) && isFreeSquare($(board[2][j])))
+        options.push({i: 3, j: j});
 
     return options;
 }
@@ -419,7 +435,7 @@ function caseRook(i, j, color, board){
 
     let tempJ = j+1;
     // Right
-    while(tempJ <= 7 && !$(board[i][tempJ]).hasClass("black-piece") && !$(board[i][tempJ]).hasClass("white-piece")){
+    while(tempJ <= 7 && isFreeSquare($(board[i][tempJ]))){
         options.push({i: i, j: tempJ});
         tempJ += 1;
     }
@@ -429,7 +445,7 @@ function caseRook(i, j, color, board){
 
     tempJ = j-1;
     // Left
-    while(tempJ >= 0 && !$(board[i][tempJ]).hasClass("black-piece") && !$(board[i][tempJ]).hasClass("white-piece")){
+    while(tempJ >= 0 && isFreeSquare($(board[i][tempJ]))){
         options.push({i: i, j: tempJ});
         tempJ -= 1;
     }
@@ -439,7 +455,7 @@ function caseRook(i, j, color, board){
 
     let tempI = i-1;
     // Up
-    while(tempI >= 0 && !$(board[tempI][j]).hasClass("black-piece") && !$(board[tempI][j]).hasClass("white-piece")){
+    while(tempI >= 0 && isFreeSquare($(board[tempI][j]))){
         options.push({i: tempI, j: j});
         tempI -= 1;
     }
@@ -449,7 +465,7 @@ function caseRook(i, j, color, board){
 
     tempI = i+1;
     // Down
-    while(tempI <= 7 && !$(board[tempI][j]).hasClass("black-piece") && !$(board[tempI][j]).hasClass("white-piece")){
+    while(tempI <= 7 && isFreeSquare($(board[tempI][j]))){
         options.push({i: tempI, j: j});
         tempI += 1;
     }
@@ -466,7 +482,7 @@ function caseBishop(i, j, color, board){
     let tempI = i-1;
     let tempJ = j+1;
     // Diagonal up-right
-    while(tempI >= 0 && tempJ <= 7 && !$(board[tempI][tempJ]).hasClass("black-piece") && !$(board[tempI][tempJ]).hasClass("white-piece")){
+    while(tempI >= 0 && tempJ <= 7 && isFreeSquare($(board[tempI][tempJ]))){
         options.push({i: tempI, j: tempJ});
         tempI -= 1;
         tempJ += 1;
@@ -478,7 +494,7 @@ function caseBishop(i, j, color, board){
     tempI = i-1;
     tempJ = j-1;
     // Diagonal up-left
-    while(tempI >= 0 && tempJ >= 0 && !$(board[tempI][tempJ]).hasClass("black-piece") && !$(board[tempI][tempJ]).hasClass("white-piece")){
+    while(tempI >= 0 && tempJ >= 0 && isFreeSquare($(board[tempI][tempJ]))){
         options.push({i: tempI, j: tempJ});
         tempI -= 1;
         tempJ -= 1;
@@ -490,7 +506,7 @@ function caseBishop(i, j, color, board){
     tempI = i+1;
     tempJ = j+1;
     // Diagonal down-right
-    while(tempI <= 7 && tempJ <= 7 && !$(board[tempI][tempJ]).hasClass("black-piece") && !$(board[tempI][tempJ]).hasClass("white-piece")){
+    while(tempI <= 7 && tempJ <= 7 && isFreeSquare($(board[tempI][tempJ]))){
         options.push({i: tempI, j: tempJ});
         tempI += 1;
         tempJ += 1;
@@ -502,7 +518,7 @@ function caseBishop(i, j, color, board){
     tempI = i+1;
     tempJ = j-1;
     // Diagonal down-left
-    while(tempI <= 7 && tempJ >= 0 && !$(board[tempI][tempJ]).hasClass("black-piece") && !$(board[tempI][tempJ]).hasClass("white-piece")){
+    while(tempI <= 7 && tempJ >= 0 && isFreeSquare($(board[tempI][tempJ]))){
         options.push({i: tempI, j: tempJ});
         tempI += 1;
         tempJ -= 1;
