@@ -4,11 +4,14 @@
 
 You can click [here](https://renans2.github.io/my-front-end-projects/ "renans2.github.io/my-front-end-projects") to visit the website associated with this own repo (using GitHub Pages) where I publish the finished projects, so anyone can play/test them.
 
+`For the sake of simplicity, the apps/games work better on PC, since I haven't applied any media queries to make them responsive to use on mobile devices.`
+
 <h3>What I've been using for my projects:</h3>
 <img align="left" width="70px" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" />
 <img align="left" width="70px" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" />
 <img align="left" width="70px" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" />
 <img align="left" width="70px" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jquery/jquery-plain-wordmark.svg" />
+<img align="left" width="70px" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/p5js/p5js-original.svg" />
 
 <br>
 <br>
