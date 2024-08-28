@@ -11,12 +11,20 @@
     <title>Memory Game</title>
 </head>
 <body>
-    <span class="message">Find all the pairs to finish the game</span>
-    <div class="gameover-container">
-        <span>Game Over!</span>
-        <button id="play-again-button">Play Again</button>
+    <div class="container">
+        <div class="menu">
+            <span class="message">Find all the pairs to finish the game</span>
+            <div class="select-container">
+                <label for="select">Choose difficulty:</label>
+                <select name="Choose difficulty level" id="select">
+                    <option value="4">Easy (4x4)</option>
+                    <option value="6">Hard (6x6)</option>
+                    <option value="8">ETERNAL (8x8)</option>
+                </select>
+                <button id="start-button">Start</button>
+            </div>
+        </div>
     </div>
-    <div class="container"></div>
 
     <script src="script.js"></script>
 </body>

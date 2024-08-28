@@ -6,7 +6,7 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    color: white;
+    font-family: monospace;
 }
 
 body{
@@ -20,11 +20,28 @@ body{
     background-color: #000000;
 }
 
-span{
-    font-family: monospace;
-    font-size: 25px;
-    font-weight: bold;
-    margin: 10px;
+.container{
+    position: relative;
+    display: grid;
+    height: 90vh;
+    aspect-ratio: 1/1;
+}
+
+.menu{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    min-width: 90%;
+    height: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: black;
+    z-index: 1;
+    border-radius: 20px;
+    border: 2px solid white;
 }
 
 .message{
@@ -33,6 +50,13 @@ span{
     background-color: #000000;
     padding: 10px;
     border-radius: 1000px;
+    color: white;
+}
+
+span{
+    font-size: 25px;
+    font-weight: bold;
+    margin: 10px;
 }
 
 .message::after{
@@ -49,34 +73,63 @@ span{
     border-radius: 1000px;
 }
 
-.gameover-container{
+.select-container{
+    /*background-color: red;*/
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#play-again-button{
-    width: 125px;
-    font-size: 20px;
+label{
+    margin-right: 10px;
+    color: white;
+    font-size: 1.7rem;
     font-weight: bold;
-    background-color: #00ff00;
-    border-radius: 10px;
-}
-
-#play-again-button:hover{
-    background-color: #a8ffa8;
     cursor: pointer;
 }
 
-.container{
+#select{
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+#start-button{
+    background-color: black;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
     position: relative;
-    display: grid;
-    height: 80vh;
-    aspect-ratio: 1/1;
+    border-radius: 1000px;
+    padding: 10px;
+}
+
+#start-button:after{
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    background-image: linear-gradient(to bottom right, #00ff20, #eeff00);
+    z-index: -1;
+    border-radius: 1000px;
+}
+
+#start-button:hover{
+    background-color: rgba(0, 0, 0, 0);
+    text-shadow: 2px 2px 5px black;
 }
 
 .cell{
     position: relative;
     margin: 5%;
     perspective: 300px;
+    /*transform-style: preserve-3d;*/
 }
 
 .back, .front{
@@ -88,35 +141,50 @@ span{
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 7%;
-    background-image: linear-gradient(to bottom right, #6200ff, #b700ff);
+    border-radius: 8%;
+    background-color: black;
 }
 
-.front:hover{
-    /*transform: scale(1.1);*/
+.front::after, .back::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to bottom right, #ff0000, #b000ff);
+    z-index: -1;
+    border-radius: 10%;
+    padding: 3px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    /*-webkit-mask-composite: destination-out;*/
+}
+
+.front{
+    background-color: black;
+}
+
+.back{
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotateX(-180deg);
+
+}
+
+.back img{
+    width: 75%;
 }
 
 .found{
     cursor: not-allowed;
 }
 
-.found .back{
-    background-image: linear-gradient(to bottom right, #d900ff, #002fff);
-}
-
-.back{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: rotateX(-180deg);
-}
-
-.back img{
-    width: 90%;
-    filter: drop-shadow(2px 2px 1px rgba(255, 255, 255, 0.2))
-            drop-shadow(-2px -2px 1px rgba(255, 255, 255, 0.2))
-    drop-shadow(-2px 2px 1px rgba(255, 255, 255, 0.2))
-    drop-shadow(2px -2px 1px rgba(255, 255, 255, 0.2));
+.found .back::after{
+    background-image: linear-gradient(to bottom right, #14ff00, #f8ff00);
 }
 
 .flip-front{

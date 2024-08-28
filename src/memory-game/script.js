@@ -40,20 +40,52 @@ images = shuffle(images);
 
 let canClick = true;
 const timeShowingCells = 700;
-const dimensions = 4;
+let dimensions = 4;
 const container = $(".container");
-const gameOverContainer = $(".gameover-container");
 const message = $(".message");
 let selected = null;
 let pairsFound = 0;
-let over = false;
+let over = true;
+let playAgain = false;
+let reseted = true;
 
-gameOverContainer.hide();
-container.css("grid-template-columns", `repeat(${dimensions}, auto)`);
 fillContainer();
 setListener();
 
+$("#select").on("change", function() {
+   dimensions = parseInt($(this).val());
+
+   if(!reseted)
+       reset();
+
+   fillContainer();
+   setListener();
+});
+
+$("#start-button").on("click", function() {
+    $(".menu").hide();
+
+    if(!reseted){
+        reset();
+        fillContainer();
+        setListener();
+    }
+
+    over = false;
+});
+
+function reset(){
+    images = shuffle(images);
+    pairsFound = 0;
+    canClick = true;
+    selected = null;
+    reseted = true;
+}
+
 function fillContainer() {
+    $(".cell").remove();
+    container.css("grid-template-columns", `repeat(${dimensions}, auto)`);
+
     let array = [];
 
     for (let i = 0; i < (dimensions * dimensions)/2; i++) {
@@ -77,7 +109,7 @@ function fillContainer() {
 
 function setListener(){
     $(".cell").on("click", function(){
-        if(isClickable(this)){
+        if(isClickable(this) && !over){
             const front = getFront(this);
             const back  = getBack(this);
 
@@ -98,19 +130,6 @@ function setListener(){
         }
     });
 }
-
-$("#play-again-button").on("click", function(){
-    images = shuffle(images);
-    $(".cell").remove();
-    fillContainer();
-    setListener();
-    message.show();
-    gameOverContainer.hide();
-    pairsFound = 0;
-    over = false;
-    canClick = true;
-    selected = null;
-});
 
 function notTheSameCell(current){
     return $(current).attr("id") !== selected.cell.attr("id")
@@ -143,10 +162,12 @@ function caseMatch(current){
     selected = null;
     pairsFound++;
 
-    if(pairsFound === (dimensions*dimensions)/2){
+    if(pairsFound === (dimensions * dimensions) / 2){
         over = true;
-        gameOverContainer.show();
-        message.hide();
+        playAgain = true;
+        reseted = false;
+        $(".message").html("You found all the pair !!! Play Again ???");
+        $(".menu").show();
     }
 }
 
