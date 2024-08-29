@@ -1,0 +1,36 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.red{
+    fill: red !important;
+}
+
+.blue{
+    fill: blue !important;
+}
+
+.hovered-blue-turn{
+    fill: #7488ff !important;
+}
+
+.hovered-red-turn{
+    fill: #ff7474 !important;
+}
+
+.red:hover, .blue:hover{
+    cursor: not-allowed;
+}
