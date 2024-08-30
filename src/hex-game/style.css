@@ -2,17 +2,105 @@
  * @author Renan Silva (renans2 on GitHub)
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    user-select: none;
+
+    font-family: "Orbitron", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
 }
 
 body{
     min-height: 100vh;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #000000;
+}
+
+.game-over-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: fit-content;
+    height: fit-content;
+    padding: 2vw;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 5px solid blue;
+}
+
+.red-won{
+    border: 5px solid red;
+}
+
+.blue-won{
+    border: 5px solid blue;
+}
+
+#game-over-message{
+    color: white;
+    font-size: 5vw;
+    text-shadow: 0 0 15px black;
+}
+
+#play-again-button{
+    color: white;
+    font-size: 3vw;
+    padding: 1vw;
+    cursor: pointer;
+    border-radius: 1000px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: inset 4px #00ff00;
+}
+
+#play-again-button:hover{
+    background-color: #00d500;
+    text-shadow: 0 0 15px black;
+}
+
+#play-again-button:active{
+    border: outset 4px #00ff00;
+}
+
+#board{
+    height: 100vh;
+    width: 100vw;
+}
+
+path{
+    stroke: white !important;
+}
+
+.place{
+    cursor: pointer;
+    fill: rgba(255, 255, 255, 0.15) !important;
+}
+
+.border{
+    transition: filter 0.5s;
+}
+
+.red-border{
+    filter: drop-shadow(0px 0px 3px red);
+}
+
+.blue-border{
+    filter: drop-shadow(0px 0px 3px blue);
+}
+
+.red:hover, .blue:hover{
+    cursor: not-allowed;
 }
 
 .red{
@@ -23,14 +111,10 @@ body{
     fill: blue !important;
 }
 
-.hovered-blue-turn{
-    fill: #7488ff !important;
-}
-
 .hovered-red-turn{
     fill: #ff7474 !important;
 }
 
-.red:hover, .blue:hover{
-    cursor: not-allowed;
+.hovered-blue-turn{
+    fill: #7488ff !important;
 }

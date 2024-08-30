@@ -2,19 +2,40 @@
  * @author Renan Silva (renans2 on GitHub)
  */
 
-// red  -> from top left to bottom right (or vice versa)
-// blue -> from bottom left to top right (or vice versa)
 // starts with red -> turn 0
 let turn = 0;
 let board = [];
 let over = false;
-const paths = $("path");
+const paths = $(".place");
+const borders = $(".border");
+const gameOverContainer = $(".game-over-container");
+const gameOverMessage   = $("#game-over-message");
+const playAgainButton   = $("#play-again-button");
+borders.addClass("red-border");
+gameOverContainer.hide();
+resetBoard();
 
-for (let i = 0; i < 11; i++) {
-    board[i] = [];
-    for (let j = 0; j < 11; j++) {
-        board[i][j] = "";
+function resetBoard() {
+    for (let i = 0; i < 11; i++) {
+        board[i] = [];
+        for (let j = 0; j < 11; j++) {
+            board[i][j] = "";
+        }
     }
+}
+
+playAgainButton.on("click", function() {
+    resetGame();
+    gameOverContainer.hide();
+});
+
+function resetGame(){
+    resetBoard();
+    turn = 0;
+    borders.addClass("red-border");
+    borders.removeClass("blue-border");
+    paths.removeClass("red blue");
+    over = false;
 }
 
 paths.on("click", function() {
@@ -28,20 +49,19 @@ paths.on("click", function() {
             board[i][j] = "red";
 
             if(connected("red"))
-                gameOver();
+                gameOver("Red");
+            else
+                changeTurn();
         } else {
             $(this).addClass("blue");
             $(this).removeClass("hovered-blue-turn");
             board[i][j] = "blue";
 
             if(connected("blue"))
-                gameOver();
+                gameOver("Blue");
+            else
+                changeTurn();
         }
-
-        changeTurn();
-
-        // console.clear();
-        // console.log(board);
     }
 });
 
@@ -136,9 +156,10 @@ function atLeastOneOnEachBorder(color){
     }
 }
 
-function gameOver(){
+function gameOver(winner){
     over = true;
-    console.log("over");
+    gameOverMessage.html(winner + " Won!");
+    gameOverContainer.show();
 }
 
 function isPainted(path){
@@ -165,21 +186,5 @@ paths.on("mouseleave", function() {
 
 function changeTurn(){
     turn = (turn + 1) % 2;
+    borders.toggleClass("red-border blue-border");
 }
-
-
-// let i = 0;
-// let j = 0;
-//
-// $("path").on("click", function() {
-//     $(this).attr("data-i", `${i}`);
-//     $(this).attr("data-j", `${j}`);
-//     console.log(`i: ${i}, j: ${j}`);
-//
-//     j++;
-//
-//     if(j === 11){
-//         i++;
-//         j = 0;
-//     }
-// });
