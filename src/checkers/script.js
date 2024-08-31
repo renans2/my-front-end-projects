@@ -1,0 +1,193 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
+// 10x10 board
+// each square occupies 10% (0.1) of the width and height of the canvas
+let board = [];
+let turn = 0;
+let selectedPiece;
+let currOptions = [];
+let gameIsOver = false;
+
+function setup(){
+    noStroke();
+    windowResized();
+    frameRate(20);
+
+    resetBoard();
+}
+
+function draw(){
+    background(0);
+    drawBoardAndPieces();
+}
+
+function windowResized(){
+    if(windowWidth > windowHeight)
+        resizeCanvas(windowHeight, windowHeight);
+    else
+        resizeCanvas(windowWidth, windowWidth);
+}
+
+function resetBoard(){
+    for (let i = 0; i < 10; i++) {
+        board[i] = [];
+        for (let j = 0; j < 10; j++) {
+            if((i + j) % 2 === 0){
+                if(0 <= i && i <= 3)
+                    board[i][j] = {player: 1, piece: "pawn"};
+                else if(6 <= i && i <= 9)
+                    board[i][j] = {player: 0, piece: "pawn"};
+                else
+                    board[i][j] = "";
+            } else {
+                board[i][j] = "";
+            }
+        }
+    }
+}
+
+function drawBoardAndPieces(){
+    // the proportion of 1:1 is maintained so it doesn't matter
+    // if is "width" or "height", because they have the same value
+    const offset = 0.1 * width;
+
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+
+            if((row + col) % 2 === 0){
+                if((hoveringPlayablePiece(row, col)) ||
+                   (selectedPiece != null && isAnOption(row, col)) ||
+                   (selectedPiece != null && selectedPiece.i === row && selectedPiece.j === col)){
+                    fill(0,150,0);
+                } else {
+                    fill(0);
+                }
+            } else {
+                fill(255);
+            }
+
+            rect(col * offset, row * offset, offset, offset);
+
+            if(board[row][col].player === 0){
+                fill(255,0,0);
+                circle(col * offset + offset/2, row * offset + offset/2, 0.9 * offset);
+            } else if(board[row][col].player === 1)
+                fill(0,0,255);
+                circle(col * offset + offset/2, row * offset + offset/2, 0.9 * offset);
+        }
+    }
+}
+
+function isAnOption(i, j){
+    for (const option of currOptions)
+        if(option.i === i && option.j === j)
+            return true;
+
+    return false;
+}
+
+function hoveringPlayablePiece(row, col){
+    const offset = 0.1 * width;
+    const j = floor(mouseX / offset);
+    const i = floor(mouseY / offset);
+
+    return row === i && col === j &&
+        ((board[row][col].player === turn) || (board[row][col].player === turn)) && pieceHasOptions(row, col);
+}
+
+function mouseClicked(){
+    if(insideTheCanvas()){
+        const offset = 0.1 * width;
+        const j = floor(mouseX / offset);
+        const i = floor(mouseY / offset);
+
+        if(board[i][j].player === turn && pieceHasOptions(i, j)){
+            selectedPiece = {
+                i: i,
+                j: j
+            };
+            currOptions = getOptions(i, j);
+        } else if(board[i][j] === "" && isAnOption(i, j)){
+            const piece = board[selectedPiece.i][selectedPiece.j].piece
+            board[i][j] = {player: turn, piece: piece};
+            board[selectedPiece.i][selectedPiece.j] = "";
+            updateGameStats();
+
+            if(!gameIsOver){
+                checkIfBecomesKing(i, j);
+                changeTurn();
+            }
+        }
+    }
+}
+
+function updateGameStats(){
+
+}
+
+function captureOptions(i, j, currentTrail){
+    if(turn === 0){
+        if(i-2 >= 0){
+            if(j-2 >= 0 && board[i-1][j-1].player !== turn){
+                if(i === 0 || i-4 < 0 || (board[i-4][j-4] !== "" && board[i-4][j+4] !== "")){
+                    currOptions.push([...currentTrail, {i: i-2, j: j-2}]);
+                } else {
+                    captureOptions(i, j, [currentTrail, {i: i-2, j: j-2}]);
+                }
+            }
+        } else if(i === 0 || i-2 < 0 || (board[i-2][j-2] !== "" && board[i-2][j+2] !== "")){
+
+        }
+    } else {
+
+    }
+}
+
+function checkIfBecomesKing(i, j){
+    if(board[i][j].piece === "pawn"){
+        if((turn === 0 && i === 0) || (turn === 1 && i === 9))
+            board[i][j].piece = "king";
+    }
+}
+
+function getOptions(i, j){
+    let options = [];
+
+    if(board[i][j].piece === "pawn"){
+        if(turn === 0){
+            if(i-1 >= 0){
+                if(j-1 >= 0 && board[i-1][j-1] === "")
+                    options.push({i: i-1, j: j-1});
+                if(j+1 <= 9 && board[i-1][j+1] === "")
+                    options.push({i: i-1, j: j+1});
+            }
+        } else {
+            if(i+1 <= 9){
+                if(j-1 >= 0 && board[i+1][j-1] === "")
+                    options.push({i: i+1, j: j-1});
+                if(j+1 <= 9 && board[i+1][j+1] === "")
+                    options.push({i: i+1, j: j+1});
+            }
+        }
+    } else {
+
+    }
+
+    return options;
+}
+
+function pieceHasOptions(i, j){
+    return getOptions(i, j).length > 0;
+}
+
+function changeTurn(){
+    turn = (turn + 1) % 2;
+    currOptions = [];
+    selectedPiece = null;
+}
+
+function insideTheCanvas(){
+    return 0 <= mouseX && mouseX <= width && 0 <= mouseY && mouseY <= height;
+}

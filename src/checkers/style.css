@@ -1,0 +1,33 @@
+/**
+ * @author Renan Silva (renans2 on GitHub)
+ */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas{
+    border-style: outset;
+    border-color: #adadad;
+}
+
+@media screen and (orientation: landscape){
+    canvas{
+        border-width: 1vh;
+    }
+}
+
+@media screen and (orientation: portrait){
+    canvas{
+        border-width: 1vw;
+    }
+}
