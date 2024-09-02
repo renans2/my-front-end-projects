@@ -8,6 +8,7 @@ let board = [];
 let turn = 0;
 let selectedPiece;
 let currOptions = [];
+let movingPieceIsKing = false;
 let optionSelected = [];
 let gameIsOver = false;
 
@@ -72,11 +73,18 @@ function drawBoardAndPieces(){
             rect(col * offset, row * offset, offset, offset);
 
             if(board[row][col].player === 0){
-                fill(255,0,0);
-                circle(col * offset + offset/2, row * offset + offset/2, 0.9 * offset);
-            } else if(board[row][col].player === 1)
-                fill(0,0,255);
-                circle(col * offset + offset/2, row * offset + offset/2, 0.9 * offset);
+                if(board[row][col].piece === "pawn")
+                    fill(255,0,0);
+                else
+                    fill(255,100,0);
+            } else if(board[row][col].player === 1){
+                if(board[row][col].piece === "pawn")
+                    fill(0,0,255);
+                else
+                    fill(100,0,255);
+            }
+
+            circle(col * offset + offset/2, row * offset + offset/2, 0.8 * offset);
         }
     }
 }
@@ -115,7 +123,7 @@ function mouseClicked(){
             };
             currOptions = [];
             setNoCaptureOptions(i, j);
-            setCaptureOptions(i, j, []);
+            setCaptureOptions(i, j, [], board[i][j].piece === "king");
             let temp = [];
             currOptions.forEach(option => {
                 if(temp.length === 0)
@@ -141,7 +149,9 @@ function mouseClicked(){
 }
 
 function moveTo(i, j, piece){
-    board[i][j] = {player: turn, piece: piece};
+    board[i][j] = {player: turn, piece: movingPieceIsKing ? "king" : piece};
+    movingPieceIsKing = false;
+
     for (const place of optionSelected) {
         if(place.captureI)
             board[place.captureI][place.captureJ] = "";
@@ -152,29 +162,102 @@ function updateGameStats(){
 
 }
 
-function setCaptureOptions(i, j, currentTrail){
-    if(turn === 0){
+function setCaptureOptions(i, j, currentTrail, isKing){
+    if(isKing){
+        let hasTopRightCapture, hasTopLeftCapture, hasBottomRightCapture, hasBottomLeftCapture;
+
         if(i-2 >= 0){
-            let hasRightCapture, hasLeftCapture;
-
-            if(j-2 >= 0 && board[i-2][j-2] === "" && board[i-1][j-1].player === (turn + 1) % 2){
-                hasLeftCapture = true;
-                setCaptureOptions(i-2, j-2, [...currentTrail, {i: i-2, j: j-2, captureI: i-1, captureJ: j-1}]);
+            if(j-2 >= 0 && board[i-2][j-2] === "" && board[i-1][j-1].player === (turn + 1) % 2 && !hasBeenCaptured(i-1, j-1, currentTrail)){
+                hasTopLeftCapture = true;
+                setCaptureOptions(i-2, j-2, [...currentTrail, {i: i-2, j: j-2, captureI: i-1, captureJ: j-1}], true);
             }
 
-            if(j+2 <= 9 && board[i-2][j+2] === "" && board[i-1][j+1].player === (turn + 1) % 2){
-                hasRightCapture = true;
-                setCaptureOptions(i-2, j+2, [...currentTrail, {i: i-2, j: j+2, captureI: i-1, captureJ: j+1}]);
+            if(j+2 <= 9 && board[i-2][j+2] === "" && board[i-1][j+1].player === (turn + 1) % 2 && !hasBeenCaptured(i-1, j+1, currentTrail)){
+                hasTopRightCapture = true;
+                setCaptureOptions(i-2, j+2, [...currentTrail, {i: i-2, j: j+2, captureI: i-1, captureJ: j+1}], true);
             }
 
-            if(!hasLeftCapture && !hasRightCapture){
-                currOptions.push([...currentTrail]);
+        }
+
+        if(i+2 <= 9){
+            if(j-2 >= 0 && board[i+2][j-2] === "" && board[i+1][j-1].player === (turn + 1) % 2 && !hasBeenCaptured(i+1, j-1, currentTrail)){
+                hasBottomLeftCapture = true;
+                setCaptureOptions(i+2, j-2, [...currentTrail, {i: i+2, j: j-2, captureI: i+1, captureJ: j-1}], true);
             }
-        } else {
+
+            if(j+2 <= 9 && board[i+2][j+2] === "" && board[i+1][j+1].player === (turn + 1) % 2 && !hasBeenCaptured(i+1, j+1, currentTrail)){
+                hasBottomRightCapture = true;
+                setCaptureOptions(i+2, j+2, [...currentTrail, {i: i+2, j: j+2, captureI: i+1, captureJ: j+1}], true);
+            }
+
+        }
+
+        if(!hasTopRightCapture && !hasTopLeftCapture && !hasBottomRightCapture && !hasBottomLeftCapture){
             currOptions.push([...currentTrail]);
         }
-    } else {
+    } else if(turn === 0) {
+        player1CaptureMovement(i, j, currentTrail);
+    } else if(turn === 1) {
+        player2CaptureMovement(i, j, currentTrail);
+    }
+}
 
+function hasBeenCaptured(i, j, currentTrail){
+    for (const pos of currentTrail) {
+        if(pos.captureI === i && pos.captureJ === j)
+            return true;
+    }
+
+    return false;
+}
+
+function player1CaptureMovement(i, j, currentTrail){
+    if(i-2 >= 0){
+        let hasRightCapture, hasLeftCapture;
+
+        if(j-2 >= 0 && board[i-2][j-2] === "" && board[i-1][j-1].player === (turn + 1) % 2){
+            hasLeftCapture = true;
+            setCaptureOptions(i-2, j-2, [...currentTrail, {i: i-2, j: j-2, captureI: i-1, captureJ: j-1}], false);
+        }
+
+        if(j+2 <= 9 && board[i-2][j+2] === "" && board[i-1][j+1].player === (turn + 1) % 2){
+            hasRightCapture = true;
+            setCaptureOptions(i-2, j+2, [...currentTrail, {i: i-2, j: j+2, captureI: i-1, captureJ: j+1}], false);
+        }
+
+        if(!hasLeftCapture && !hasRightCapture){
+            currOptions.push([...currentTrail]);
+        }
+    } else if(i === 0) {
+        movingPieceIsKing = true;
+        setCaptureOptions(i, j, [...currentTrail], true);
+    } else {
+        currOptions.push([...currentTrail]);
+    }
+}
+
+function player2CaptureMovement(i, j, currentTrail){
+    if(i+2 <= 9){
+        let hasRightCapture, hasLeftCapture;
+
+        if(j-2 >= 0 && board[i+2][j-2] === "" && board[i+1][j-1].player === (turn + 1) % 2){
+            hasLeftCapture = true;
+            setCaptureOptions(i+2, j-2, [...currentTrail, {i: i+2, j: j-2, captureI: i+1, captureJ: j-1}], false);
+        }
+
+        if(j+2 <= 9 && board[i+2][j+2] === "" && board[i+1][j+1].player === (turn + 1) % 2){
+            hasRightCapture = true;
+            setCaptureOptions(i+2, j+2, [...currentTrail, {i: i+2, j: j+2, captureI: i+1, captureJ: j+1}], false);
+        }
+
+        if(!hasLeftCapture && !hasRightCapture){
+            currOptions.push([...currentTrail]);
+        }
+    } else if(i === 9) {
+        movingPieceIsKing = true;
+        setCaptureOptions(i, j, [...currentTrail], true);
+    } else {
+        currOptions.push([...currentTrail]);
     }
 }
 
