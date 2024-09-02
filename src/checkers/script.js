@@ -8,6 +8,7 @@ let board = [];
 let turn = 0;
 let selectedPiece;
 let currOptions = [];
+let optionSelected = [];
 let gameIsOver = false;
 
 function setup(){
@@ -81,9 +82,13 @@ function drawBoardAndPieces(){
 }
 
 function isAnOption(i, j){
-    for (const option of currOptions)
-        if(option.i === i && option.j === j)
+    for (const option of currOptions){
+        const lastPlace = option[option.length - 1];
+        if(lastPlace.i === i && lastPlace.j === j){
+            optionSelected = option;
             return true;
+        }
+    }
 
     return false;
 }
@@ -94,7 +99,7 @@ function hoveringPlayablePiece(row, col){
     const i = floor(mouseY / offset);
 
     return row === i && col === j &&
-        ((board[row][col].player === turn) || (board[row][col].player === turn)) && pieceHasOptions(row, col);
+        ((board[row][col].player === turn) || (board[row][col].player === turn));
 }
 
 function mouseClicked(){
@@ -103,15 +108,27 @@ function mouseClicked(){
         const j = floor(mouseX / offset);
         const i = floor(mouseY / offset);
 
-        if(board[i][j].player === turn && pieceHasOptions(i, j)){
+        if(board[i][j].player === turn){
             selectedPiece = {
                 i: i,
                 j: j
             };
-            currOptions = getOptions(i, j);
+            currOptions = [];
+            setNoCaptureOptions(i, j);
+            setCaptureOptions(i, j, []);
+            let temp = [];
+            currOptions.forEach(option => {
+                if(temp.length === 0)
+                    temp.push(option);
+                else if(option.length > temp[0].length)
+                    temp = [option];
+                else if(option.length === temp[0].length)
+                    temp.push(option);
+            });
+            currOptions = temp;
         } else if(board[i][j] === "" && isAnOption(i, j)){
             const piece = board[selectedPiece.i][selectedPiece.j].piece
-            board[i][j] = {player: turn, piece: piece};
+            moveTo(i, j, piece);
             board[selectedPiece.i][selectedPiece.j] = "";
             updateGameStats();
 
@@ -123,22 +140,38 @@ function mouseClicked(){
     }
 }
 
+function moveTo(i, j, piece){
+    board[i][j] = {player: turn, piece: piece};
+    for (const place of optionSelected) {
+        if(place.captureI)
+            board[place.captureI][place.captureJ] = "";
+    }
+}
+
 function updateGameStats(){
 
 }
 
-function captureOptions(i, j, currentTrail){
+function setCaptureOptions(i, j, currentTrail){
     if(turn === 0){
         if(i-2 >= 0){
-            if(j-2 >= 0 && board[i-1][j-1].player !== turn){
-                if(i === 0 || i-4 < 0 || (board[i-4][j-4] !== "" && board[i-4][j+4] !== "")){
-                    currOptions.push([...currentTrail, {i: i-2, j: j-2}]);
-                } else {
-                    captureOptions(i, j, [currentTrail, {i: i-2, j: j-2}]);
-                }
-            }
-        } else if(i === 0 || i-2 < 0 || (board[i-2][j-2] !== "" && board[i-2][j+2] !== "")){
+            let hasRightCapture, hasLeftCapture;
 
+            if(j-2 >= 0 && board[i-2][j-2] === "" && board[i-1][j-1].player === (turn + 1) % 2){
+                hasLeftCapture = true;
+                setCaptureOptions(i-2, j-2, [...currentTrail, {i: i-2, j: j-2, captureI: i-1, captureJ: j-1}]);
+            }
+
+            if(j+2 <= 9 && board[i-2][j+2] === "" && board[i-1][j+1].player === (turn + 1) % 2){
+                hasRightCapture = true;
+                setCaptureOptions(i-2, j+2, [...currentTrail, {i: i-2, j: j+2, captureI: i-1, captureJ: j+1}]);
+            }
+
+            if(!hasLeftCapture && !hasRightCapture){
+                currOptions.push([...currentTrail]);
+            }
+        } else {
+            currOptions.push([...currentTrail]);
         }
     } else {
 
@@ -152,35 +185,31 @@ function checkIfBecomesKing(i, j){
     }
 }
 
-function getOptions(i, j){
-    let options = [];
-
+function setNoCaptureOptions(i, j){
     if(board[i][j].piece === "pawn"){
         if(turn === 0){
             if(i-1 >= 0){
                 if(j-1 >= 0 && board[i-1][j-1] === "")
-                    options.push({i: i-1, j: j-1});
+                    currOptions.push([{i: i-1, j: j-1}]);
                 if(j+1 <= 9 && board[i-1][j+1] === "")
-                    options.push({i: i-1, j: j+1});
+                    currOptions.push([{i: i-1, j: j+1}]);
             }
         } else {
             if(i+1 <= 9){
                 if(j-1 >= 0 && board[i+1][j-1] === "")
-                    options.push({i: i+1, j: j-1});
+                    currOptions.push([{i: i+1, j: j-1}]);
                 if(j+1 <= 9 && board[i+1][j+1] === "")
-                    options.push({i: i+1, j: j+1});
+                    currOptions.push([{i: i+1, j: j+1}]);
             }
         }
     } else {
 
     }
-
-    return options;
 }
 
-function pieceHasOptions(i, j){
-    return getOptions(i, j).length > 0;
-}
+// function pieceHasOptions(i, j){
+//     return getOptions(i, j).length > 0;
+// }
 
 function changeTurn(){
     turn = (turn + 1) % 2;
